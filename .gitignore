@@ -1,1 +1,3 @@
-scrapers/chat/
+scrapers/chat
+scrapers/chrome-win64
+scrapers/scrapervenv
