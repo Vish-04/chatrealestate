@@ -24,7 +24,10 @@
 
 
 // Relation - Listings leads
-// - 
+// - user_id : string
+// - viewed_listing_ids = []
+// - duration: number
+// - clicked_listing_ids= []
 
 //Chats - DynamoDB
 // object_id : string
