@@ -12,12 +12,12 @@ import csv
 
 
 # Initialize the WebDriver (assuming Chrome)
+chromedriver_autoinstaller.install()
+driver = webdriver.Chrome()
 
-links = ['https://www.metrolist.com/search/For_Sale-For_Rent/Map%20Location/map_9q95w88xc;9q9ky2hr5',"https://www.metrolist.com/search/For_Sale-For_Rent/Map%20Location/map_9q95ksev5;9q9t0jb0h","https://www.metrolist.com/search/For_Sale-For_Rent/Map%20Location/map_9qc02k9jf;9qc1jmune"]
+# links = ['https://www.metrolist.com/search/For_Sale-For_Rent/Map%20Location/map_9q95w88xc;9q9ky2hr5',"https://www.metrolist.com/search/For_Sale-For_Rent/Map%20Location/map_9q95ksev5;9q9t0jb0h","https://www.metrolist.com/search/For_Sale-For_Rent/Map%20Location/map_9qc02k9jf;9qc1jmune, https://www.metrolist.com/search/For_Sale-For_Rent/Map%20Location/map_9q8zx7cuc;9qfmdpetu"]
+links = ['https://www.metrolist.com/search/For_Sale-For_Rent/Map%20Location/map_9q8v60vmw;9q9r21zzv','https://www.metrolist.com/search/For_Sale-For_Rent/Map%20Location/map_9q9580nu8;9q9mw33px','https://www.metrolist.com/search/For_Sale-For_Rent/Map%20Location/map_9q9j1njgb;9q9rpr0nr', 'https://www.metrolist.com/search/For_Sale-For_Rent/Map%20Location/map_9q8yuxdjf;9qc348kx9','https://www.metrolist.com/search/For_Sale-For_Rent/Map%20Location/map_9q8xvgdpz;9qc1uxe5f','https://www.metrolist.com/search/For_Sale-For_Rent/Map%20Location/map_9qc137vbq;9qce9hpdx','https://www.metrolist.com/search/For_Sale-For_Rent/Map%20Location/map_9qc6wsyxz;9qcuyt06z']
 for i in range(len(links)):
-    chromedriver_autoinstaller.install()
-
-    driver = webdriver.Chrome()
     # Open the URL
     driver.get(links[i])
 
@@ -37,6 +37,12 @@ for i in range(len(links)):
             # Click on the marker using JavaScript to avoid interception
             driver.execute_script("arguments[0].click();", marker)
             
+            current_url = driver.current_url
+            listing['listing_url'] = current_url
+            print('listing url', current_url)
+
+            break
+
             # Wait for the map-popup to appear and click on it
             WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CLASS_NAME, 'map-popup')))
             map_popup = driver.find_element(By.CLASS_NAME, 'map-popup')
@@ -307,8 +313,8 @@ for i in range(len(links)):
             dict_writer.writeheader()
             dict_writer.writerows(listings)
 
-    # Close the WebDriver
-    driver.quit()
+# Close the WebDriver
+driver.quit()
 
 
 
