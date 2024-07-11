@@ -13,10 +13,10 @@ import csv
 
 # Initialize the WebDriver (assuming Chrome)
 
-links = ['https://www.metrolist.com/search/For_Sale-For_Rent/Map%20Location/map_9q8x69r7k;9qc6cduwu',"https://www.metrolist.com/search/For_Sale-For_Rent/Map%20Location/map_9q95ksev5;9q9t0jb0h","https://www.metrolist.com/search/For_Sale-For_Rent/Map%20Location/map_9qc02k9jf;9qc1jmune"]
+links = ['https://www.metrolist.com/search/For_Sale-For_Rent/Map%20Location/map_9q95w88xc;9q9ky2hr5',"https://www.metrolist.com/search/For_Sale-For_Rent/Map%20Location/map_9q95ksev5;9q9t0jb0h","https://www.metrolist.com/search/For_Sale-For_Rent/Map%20Location/map_9qc02k9jf;9qc1jmune"]
 for i in range(len(links)):
     chromedriver_autoinstaller.install()
-    
+
     driver = webdriver.Chrome()
     # Open the URL
     driver.get(links[i])
