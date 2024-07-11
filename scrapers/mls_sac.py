@@ -15,7 +15,7 @@ chromedriver_autoinstaller.install()
 driver = webdriver.Chrome()
 
 # Open the URL
-driver.get('https://www.metrolist.com/search/For_Sale-For_Rent/Map%20Location/map_9qc4nun98;9qfjbhf6z')
+driver.get('https://www.metrolist.com/search/For_Sale-For_Rent/Map%20Location/map_9qc02s0df;9qc1npdhr')
 
 # Wait for the page to load
 WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CLASS_NAME, 'markerSale')))
@@ -286,7 +286,7 @@ except Exception as e:
     print(f"An error occurred: {e}")
 
 # Define the CSV file name
-csv_file = 'listings.csv'
+csv_file = 'listings-vallejo-and-around.csv'
 
 print(listings)
 
