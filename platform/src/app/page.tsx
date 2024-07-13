@@ -174,6 +174,7 @@ export default function Home() {
                 color: 'white',
                 '&:hover': {
                   opacity: 0.9,
+                  borderRadius: '30px',
                   border: '2px solid',
                   borderImage: 'linear-gradient(to right, #a855f7, #ec4899, #ef4444) 1',
                 },
@@ -187,13 +188,13 @@ export default function Home() {
               variant="outlined"
               sx={{border: '2px solid', "&:hover": {border: '2px solid'}}}
             >
-              <span className="bg-gradient-to-r from-purple-400 via-pink-500 fade-in-on-scroll to-red-500 text-transparent bg-clip-text">Sign Up</span>
+              <span className="bg-gradient-to-r from-purple-400 via-pink-500 fade-in-on-scroll to-red-500 text-transparent font-semibold bg-clip-text">Sign Up</span>
             </Button>
           </SignUpButton>
         </Box>
 
         <Typography variant='h5' className={`text-[white] font-bold absolute top-0 left-0 mt-4 ml-4`}>
-          Dream<span className="bg-gradient-to-r from-purple-400 via-pink-500 fade-in-on-scroll to-red-500 font-bold bg-clip-text">RE</span> 
+          Dream<span className="bg-gradient-to-r from-purple-400 via-pink-500 fade-in-on-scroll to-red-500 text-transparent bg-clip-text">RE</span> 
         </Typography>
         
         <Box className='w-full flex flex-col items-center justify-center fade-in-on-scroll mt-8'>
