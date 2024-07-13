@@ -161,8 +161,39 @@ export default function Home() {
 
       {/* MAIN BODY */}
       <Box className="w-[calc(100vw-67px)] h-[100vh] p-4 relative flex flex-col items-center transition-all duration-500 text-center justify-between">
+        {/* Sign In and Sign Up Buttons */}
+        <Box className="absolute top-0 right-0 mt-4 mr-4 flex gap-2">
+          <SignInButton>
+            <Button
+              variant="outlined"
+              className="text-white rounded-md"
+              sx={{
+                border: '2px solid',
+                borderRadius: '30px',
+                borderImage: 'linear-gradient(to right, #a855f7, #ec4899, #ef4444) 1',
+                color: 'white',
+                '&:hover': {
+                  opacity: 0.9,
+                  border: '2px solid',
+                  borderImage: 'linear-gradient(to right, #a855f7, #ec4899, #ef4444) 1',
+                },
+              }}
+            >
+              Sign In
+            </Button>
+          </SignInButton>
+          <SignUpButton>
+            <Button
+              variant="outlined"
+              sx={{border: '2px solid', "&:hover": {border: '2px solid'}}}
+            >
+              <span className="bg-gradient-to-r from-purple-400 via-pink-500 fade-in-on-scroll to-red-500 text-transparent bg-clip-text">Sign Up</span>
+            </Button>
+          </SignUpButton>
+        </Box>
+
         <Typography variant='h5' className={`text-[white] font-bold absolute top-0 left-0 mt-4 ml-4`}>
-          Dream<span className="bg-gradient-to-r from-purple-400 via-pink-500 fade-in-on-scroll to-red-500 text-transparent bg-clip-text">RE</span> 
+          Dream<span className="bg-gradient-to-r from-purple-400 via-pink-500 fade-in-on-scroll to-red-500 font-bold bg-clip-text">RE</span> 
         </Typography>
         
         <Box className='w-full flex flex-col items-center justify-center fade-in-on-scroll mt-8'>
