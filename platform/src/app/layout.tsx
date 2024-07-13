@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { NextAuthProvider } from "./nextAuthProvider";
 import { Josefin_Sans } from "next/font/google";
 import { ThemeProvider } from '@mui/material/styles';
 import { theme } from "./utils/theme";
@@ -30,7 +29,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${josefin.className} overflow-hidden`}>
         <ThemeProvider theme={theme}>
-          <NextAuthProvider children={children} />
+          {children}
         </ThemeProvider>
       </body>
     </html>
