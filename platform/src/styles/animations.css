@@ -1,24 +1,3 @@
-@keyframes fadeInFromTop {
-    0% {
-      opacity: 0;
-      transform: translateY(-20px);
-    }
-    100% {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-  
-  .fade-in-on-scroll {
-    animation: fadeInFromTop 1s ease-out;
-  }
-
-  .slide-in-on-scroll {
-    animation: slideInFromRight 10s ease-out forwards;
-    animation-delay: 1s;
-  }
-
-
   .listings:hover .listings-slide{
     animation-play-state: paused;
     

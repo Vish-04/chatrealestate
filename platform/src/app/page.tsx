@@ -1,17 +1,31 @@
 'use client'
 
+// ** React Imports
+import { useState } from 'react';
+
+// ** Styles Imports
 import '../styles/animations.css';
+
+// ** MUI Imports
 import Box from '@mui/material/Box';
-import { Button, Typography, Tooltip } from '@mui/material'; 
+import { Button, Typography, Tooltip, TextField, Popover, Popper, ClickAwayListener } from '@mui/material'; 
+import { useTheme } from '@mui/material/styles';
+
+
+// ** Icons Imports
 import { IconEdit, IconMessageCircle, IconSend } from '@tabler/icons-react'; 
-import TextField from '@mui/material/TextField';
-import { Unstable_Popup as BasePopup } from '@mui/base/Unstable_Popup';
-import { styled } from '@mui/system';
-import Listing from '../components/Listing';
+
+// ** Custom Imports
+import Listing from '../components/listing/Listing';
+import LoginPopupModal from '../components/auth/LoginPopupModal';
+
+// ** Auth
+import { SignInButton, SignUpButton, SignedOut} from '@clerk/nextjs';
 
 type SidebarType = {
   icon: React.ReactNode,
   title: string,
+  onClick: (e:any) => void
 }
 
 type ListingType = {
@@ -26,9 +40,27 @@ type ListingType = {
 
 export default function Home() {
 
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+
+  const handleClick = (event: any) => {
+    event.preventDefault();
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const [openLogin, setOpenLogin] = useState(false);
+  const theme = useTheme();
+
+  // TODO: Abstract all of these variables
   const sidebar: SidebarType[] = [
-    { icon: <IconEdit size={27} stroke={1.5} className='text-[#6f6f6f] hover:text-white transition-colors ease-in-out duration-300 m-2' />, title: 'New Chat' }, 
-    { icon: <IconMessageCircle size={27} stroke={1.5} className='text-[#6f6f6f] hover:text-white transition-colors ease-in-out duration-300 m-2' />, title: 'Chat History' }, 
+    { icon: <IconEdit size={27} stroke={1.5} className='text-[#6f6f6f] hover:text-white transition-colors ease-in-out duration-300 m-2' />, title: 'New Chat', onClick: (e)=>{
+      handleClick(e)
+      console.log("CLICKED")
+    } }, 
+    { icon: <IconMessageCircle size={27} stroke={1.5} className='text-[#6f6f6f] hover:text-white transition-colors ease-in-out duration-300 m-2' />, title: 'Chat History', onClick: (e)=>handleClick(e) }, 
   ]
 
   const examplePromptsOne = [
@@ -100,6 +132,8 @@ export default function Home() {
     }
   ];
 
+  const open = Boolean(anchorEl);
+  const id = open ? 'simple-popover' : undefined;
 
   return (
     <Box className="flex w-[100vw] h-[100vh] overflow-hidden flex-row bg-black">
@@ -108,15 +142,17 @@ export default function Home() {
         
         {/* Profile */}
         <Box className="w-[40px] h-[40px] mb-5 rounded-full flex items-center justify-center bg-gradient-to-r outline from-purple-400 via-pink-500 to-red-500 border border-black hover:outline hover:outline-3 hover:outline-white transition-all duration-300 cursor-pointer">
-          <Typography variant="h6" className="text-white">
-            VA
-          </Typography>
+          <Tooltip title="Guest User" placement="right">
+            <Typography variant="h6" className="text-white">
+              GU
+            </Typography>
+          </Tooltip>
         </Box>
 
         {/* BUTTON MAP */}
         {sidebar.map((item, index) => (
           <Tooltip title={item.title} placement="right" key={index}>
-            <Button sx={{padding: 0, minWidth: 0}} size='small' color='secondary' className=" mx-2 mb-2 rounded-md flex items-center justify-center border border-white/50">
+            <Button onClick={(e)=>item.onClick(e)} sx={{padding: 0, minWidth: 0}} size='small' color='secondary' className=" mx-2 mb-2 rounded-md flex items-center justify-center border border-white/50">
               {item.icon}
             </Button>
           </Tooltip>
@@ -125,14 +161,42 @@ export default function Home() {
 
       {/* MAIN BODY */}
       <Box className="w-[calc(100vw-67px)] h-[100vh] p-4 relative flex flex-col items-center transition-all duration-500 text-center justify-between">
+        {/* Sign In and Sign Up Buttons */}
+        <Box className="absolute top-0 right-0 mt-4 mr-4 flex gap-2">
+          <SignInButton>
+            <Button
+              variant="outlined"
+              className="text-white rounded-md"
+              sx={{
+                border: '2px solid',
+                borderRadius: '30px',
+                borderImage: 'linear-gradient(to right, #a855f7, #ec4899, #ef4444) 1',
+                color: 'white',
+                '&:hover': {
+                  opacity: 0.9,
+                  border: '2px solid',
+                  borderImage: 'linear-gradient(to right, #a855f7, #ec4899, #ef4444) 1',
+                },
+              }}
+            >
+              Sign In
+            </Button>
+          </SignInButton>
+          <SignUpButton>
+            <Button
+              variant="outlined"
+              sx={{border: '2px solid', "&:hover": {border: '2px solid'}}}
+            >
+              <span className="bg-gradient-to-r from-purple-400 via-pink-500 fade-in-on-scroll to-red-500 text-transparent bg-clip-text">Sign Up</span>
+            </Button>
+          </SignUpButton>
+        </Box>
+
         <Typography variant='h5' className={`text-[white] font-bold absolute top-0 left-0 mt-4 ml-4`}>
-          Dream<span className="bg-gradient-to-r from-purple-400 via-pink-500 fade-in-on-scroll to-red-500 text-transparent bg-clip-text">RE</span> 
+          Dream<span className="bg-gradient-to-r from-purple-400 via-pink-500 fade-in-on-scroll to-red-500 font-bold bg-clip-text">RE</span> 
         </Typography>
         
         <Box className='w-full flex flex-col items-center justify-center fade-in-on-scroll mt-8'>
-          {/* <Typography variant='h2' className={`text-[white] font-extrabold fade-in-on-scroll`}>
-            Chat<span className="bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 text-transparent bg-clip-text fade-in-on-scroll">RE</span>
-          </Typography> */}
             <Typography variant='h2' className={`text-[white] font-bold fade-in-on-scroll mb-2`}>
             Finding Your <span className="bg-gradient-to-r from-purple-400 via-pink-500 fade-in-on-scroll to-red-500 text-transparent bg-clip-text">Dream </span> House
           </Typography>
@@ -196,12 +260,83 @@ export default function Home() {
         {/* CALL TO ACTION + TITLES */}
 
         {/* FAKE INPUT */}
-        <Box className='w-[64%] flex flex-row items-center justify-between gap-2 fade-in-on-scroll cursor-pointer border mb-14 mt-10 border-white/50 rounded-md transition-all ease-in-out duration-300 hover:border-white px-4 py-3' >
-          <Typography variant='h6' className={`fade-in-on-scroll text-[white]/70`}>
-            Get Started!!
-          </Typography>
-            <IconSend size={30} stroke={2} className='text-[white] mr-2 fade-in-on-scroll placeholder:text-white' />
+        <Box className='w-[64%] px-4 py-3'>
+            <form onSubmit={handleClick}>
+            <Box id='finput' className='w-full flex flex-row items-center justify-between gap-2 fade-in-on-scroll cursor-pointer border mb-14 mt-10  rounded-md transition-all ease-in-out duration-300 ' >
+
+            <TextField variant='outlined' color='secondary' fullWidth autoComplete='false' placeholder='Start Typing...'
+            InputProps={{
+              endAdornment: <IconSend type='submit' size={30} stroke={2} className='text-[white] mr-2 hover:cursor-pointer hover:text-pink-500 transition-all ease-in-out duration-300' onClick={handleClick} />,
+              style: { border: 'none', boxShadow: 'none' }
+            }}
+            sx={{
+              '& .MuiOutlinedInput-root': {
+                '& fieldset': {
+                  border: 'none',
+                },
+                '&:hover fieldset': {
+                  border: 'none',
+                },
+                '&.Mui-focused fieldset': {
+                  border: 'none',
+                },
+              },
+              '& .MuiInputBase-input': {
+                color: 'white',
+              },
+            }}
+            >
+              Get Started!!
+            </TextField>
+            </Box>
+          </form>
           </Box>
+          <ClickAwayListener onClickAway={(e) => {
+            if (  anchorEl && !anchorEl.contains(e.target as Node)) {
+              handleClose();
+            }
+          }}>
+            <Popper
+              id={id}
+              open={open}
+              anchorEl={anchorEl}
+              placement='top'
+            >
+              <Box p={2} className={`flex flex-col justify-center items-center border border-[${theme.palette.text.secondary}] bg-[#121212] rounded-md z-[100]`}>
+                <Typography variant="h6" className="text-center" color="text.secondary">
+                  Log In to use this feature
+                </Typography>
+                <Box className='flex flex-col items-center justify-center mt-1 w-full'>
+                  <SignInButton>
+                    <Button
+                      variant="outlined"
+                      color="info"
+                      className='group'
+                      fullWidth
+                    >
+                      <Typography variant="subtitle2" color="text.primary">
+                        Log In
+                      </Typography>
+                    </Button>
+                  </SignInButton>
+                  <Box className='w-[80%] gap-2 flex items-center justify-center mt-1 mb-1'>
+                    <Box width="60%" borderBottom={`1px solid ${theme.palette.info.main}`} />
+                    <Typography variant="subtitle2" className="text-center" color="text.secondary">
+                      Or
+                    </Typography>
+                    <Box width="60%" borderBottom={`1px solid ${theme.palette.info.main}`} />
+                  </Box>
+                  <SignUpButton>
+                    <Button variant="contained" color="info" className="mb-2" fullWidth>
+                      <Typography variant="subtitle2" color="black">
+                        Sign Up
+                      </Typography>
+                    </Button>
+                  </SignUpButton>
+                </Box>
+              </Box>
+            </Popper>
+          </ClickAwayListener>
 
           {/* FOOTER */}
         <Box className="absolute bottom-0 left-0 w-full p-4 bg-transparent">
@@ -210,6 +345,8 @@ export default function Home() {
           </Typography>
         </Box>
       </Box>
+
+      {/* LOGIN POPUP */}
     </Box>
   );
 }
