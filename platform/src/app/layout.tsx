@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import "./globals.css";
 import { NextAuthProvider } from "./nextAuthProvider";
-const inter = Inter({ subsets: ["latin"] });
+import { Josefin_Sans } from "next/font/google";
+const josefin = Josefin_Sans({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -16,7 +16,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={`${josefin.className}`}>
         <NextAuthProvider children={children} />
       </body>
     </html>
