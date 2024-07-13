@@ -13,9 +13,8 @@ type ListingType = {
   }
   
 const Listing = ({listing}: {listing: ListingType}) => {
-    console.log("LIST", listing)
   return (
-    <Box className='group flex flex-col items-center w-min justify-center p-4 border-[1px] border-[#393939] rounded-sm transition-all duration-300 hover:bg-[#4a4a4a]/30 hover:scale-103 hover:cursor-pointer'>
+    <Box className='group flex flex-col items-center w-min justify-center p-4 border-[1px] border-[#393939] rounded-sm transition-all duration-300 hover:bg-[#4a4a4a]/30 hover:cursor-pointer'>
         <Box sx={{ width: 148.8*2, height: 94*2, position: 'relative' }}>
             <Image src={listing.image} alt='listing image' layout='fill' objectFit='cover' />
         </Box>

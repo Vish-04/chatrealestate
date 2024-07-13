@@ -2,6 +2,17 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { NextAuthProvider } from "./nextAuthProvider";
 import { Josefin_Sans } from "next/font/google";
+import { ThemeProvider } from '@mui/material/styles';
+import { theme } from "./utils/theme";
+
+import {
+  ClerkProvider,
+  SignInButton,
+  SignedIn,
+  SignedOut,
+  UserButton
+} from '@clerk/nextjs'
+
 const josefin = Josefin_Sans({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -15,10 +26,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
+    <ClerkProvider>
     <html lang="en">
-      <body className={`${josefin.className}`}>
-        <NextAuthProvider children={children} />
+      <body className={`${josefin.className} overflow-hidden`}>
+        <ThemeProvider theme={theme}>
+          <NextAuthProvider children={children} />
+        </ThemeProvider>
       </body>
     </html>
+    </ClerkProvider>
   );
 }
