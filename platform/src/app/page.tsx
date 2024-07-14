@@ -20,7 +20,7 @@ import Listing from '../components/listing/Listing';
 import LoginPopupModal from '../components/auth/LoginPopupModal';
 
 // ** Auth
-import { SignInButton, SignUpButton, SignedOut} from '@clerk/nextjs';
+// import { SignInButton, SignUpButton, SignedOut} from '@clerk/nextjs';
 
 type SidebarType = {
   icon: React.ReactNode,
@@ -163,8 +163,8 @@ export default function Home() {
       <Box className="w-[calc(100vw-67px)] h-[100vh] p-4 relative flex flex-col items-center transition-all duration-500 text-center justify-between">
         {/* Sign In and Sign Up Buttons */}
         <Box className="absolute top-0 right-0 mt-4 mr-4 flex gap-2">
-          <SignInButton>
             <Button
+              href='/api/auth/login'
               variant="outlined"
               className="text-white rounded-md"
               sx={{
@@ -182,15 +182,13 @@ export default function Home() {
             >
               Sign In
             </Button>
-          </SignInButton>
-          <SignUpButton>
             <Button
+              href='/api/auth/login' 
               variant="outlined"
               sx={{border: '2px solid', "&:hover": {border: '2px solid'}}}
             >
               <span className="bg-gradient-to-r from-purple-400 via-pink-500 fade-in-on-scroll to-red-500 text-transparent font-semibold bg-clip-text">Sign Up</span>
             </Button>
-          </SignUpButton>
         </Box>
 
         <Typography variant='h5' className={`text-[white] font-bold absolute top-0 left-0 mt-4 ml-4`}>
@@ -308,18 +306,17 @@ export default function Home() {
                   Log In to use this feature
                 </Typography>
                 <Box className='flex flex-col items-center justify-center mt-1 w-full'>
-                  <SignInButton>
                     <Button
                       variant="outlined"
                       color="info"
                       className='group'
-                      fullWidth
+                      fullWidth 
+                      href='/api/auth/login'
                     >
                       <Typography variant="subtitle2" color="text.primary">
                         Log In
                       </Typography>
                     </Button>
-                  </SignInButton>
                   <Box className='w-[80%] gap-2 flex items-center justify-center mt-1 mb-1'>
                     <Box width="60%" borderBottom={`1px solid ${theme.palette.info.main}`} />
                     <Typography variant="subtitle2" className="text-center" color="text.secondary">
@@ -327,13 +324,13 @@ export default function Home() {
                     </Typography>
                     <Box width="60%" borderBottom={`1px solid ${theme.palette.info.main}`} />
                   </Box>
-                  <SignUpButton>
-                    <Button variant="contained" color="info" className="mb-2" fullWidth>
+                    <Button variant="contained" color="info" className="mb-2" fullWidth
+                    href='/api/auth/login'
+                    >
                       <Typography variant="subtitle2" color="black">
                         Sign Up
                       </Typography>
                     </Button>
-                  </SignUpButton>
                 </Box>
               </Box>
             </Popper>

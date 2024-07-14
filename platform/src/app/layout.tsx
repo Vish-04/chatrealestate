@@ -3,14 +3,7 @@ import "./globals.css";
 import { Josefin_Sans } from "next/font/google";
 import { ThemeProvider } from '@mui/material/styles';
 import { theme } from "./utils/theme";
-
-import {
-  ClerkProvider,
-  SignInButton,
-  SignedIn,
-  SignedOut,
-  UserButton
-} from '@clerk/nextjs'
+import { UserProvider } from '@auth0/nextjs-auth0/client';
 
 const josefin = Josefin_Sans({ subsets: ["latin"] });
 
@@ -25,14 +18,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <ClerkProvider>
     <html lang="en">
       <body className={`${josefin.className} overflow-hidden`}>
-        <ThemeProvider theme={theme}>
-          {children}
-        </ThemeProvider>
+        <UserProvider>
+          <ThemeProvider theme={theme}>
+            {children}
+          </ThemeProvider>
+        </UserProvider>
       </body>
     </html>
-    </ClerkProvider>
   );
 }
