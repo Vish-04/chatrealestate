@@ -47,8 +47,7 @@ export default function Home() {
   const id = open ? 'simple-popover' : undefined;
 
   if(!isLoading && user) {
-    console.log("Redirecting to home page")
-    // TODO: add url to home page: url/
+    window.location.href = '/chat';
   } else {
     return (
       <Box className="flex w-[100vw] h-[100vh] overflow-hidden flex-row bg-black">
