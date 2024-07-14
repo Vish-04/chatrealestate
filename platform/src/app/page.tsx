@@ -11,6 +11,8 @@ import Box from '@mui/material/Box';
 import { Button, Typography, Tooltip, TextField, Popover, Popper, ClickAwayListener } from '@mui/material'; 
 import { useTheme } from '@mui/material/styles';
 
+// ** Type Imports
+import { SidebarType, ListingType } from './utils/types';
 
 // ** Icons Imports
 import { IconEdit, IconMessageCircle, IconSend } from '@tabler/icons-react'; 
@@ -19,23 +21,9 @@ import { IconEdit, IconMessageCircle, IconSend } from '@tabler/icons-react';
 import Listing from '../components/listing/Listing';
 import LoginPopupModal from '../components/auth/LoginPopupModal';
 
-// ** Auth
-// import { SignInButton, SignUpButton, SignedOut} from '@clerk/nextjs';
 
-type SidebarType = {
-  icon: React.ReactNode,
-  title: string,
-  onClick: (e:any) => void
-}
-
-type ListingType = {
-  image: string,
-  address: string,
-  price: string,
-  bedrooms: string,
-  bathrooms: string,
-  sqft: string
-}
+// ** Vars
+import { examplePromptsOne, examplePromptsTwo, exampleListings } from './utils/vars';
 
 
 export default function Home() {
@@ -58,79 +46,9 @@ export default function Home() {
   const sidebar: SidebarType[] = [
     { icon: <IconEdit size={27} stroke={1.5} className='text-[#6f6f6f] hover:text-white transition-colors ease-in-out duration-300 m-2' />, title: 'New Chat', onClick: (e)=>{
       handleClick(e)
-      console.log("CLICKED")
     } }, 
     { icon: <IconMessageCircle size={27} stroke={1.5} className='text-[#6f6f6f] hover:text-white transition-colors ease-in-out duration-300 m-2' />, title: 'Chat History', onClick: (e)=>handleClick(e) }, 
   ]
-
-  const examplePromptsOne = [
-    "Cheap homes in Folsom",
-    "4-bed in Sacramento",
-    "Newest in Roseville",
-    "Pools in El Dorado",
-    "3+ baths in Rocklin",
-    "Garages in Granite Bay",
-  ]
-
-  const examplePromptsTwo = [
-    "Davis homes under $500k",
-    "Citrus Heights 3-bed",
-    "Auburn new listings",
-    "Fair Oaks townhouses",
-    "Rancho Cordova villas",
-    "Placerville cottages"
-  ]
-
-  const exampleListings: ListingType[] = [
-    {
-      image: 'https://mediarem.metrolist.net/metrolist/listingpics/bigphoto/2024/07/11/5e3707aa-bd89-49bd-927f-ebc6679955fa.jpg',
-      address: '123 Main St, Folsom, CA',
-      price: '$250,000',
-      bedrooms: '5',
-      bathrooms: '5',
-      sqft: '4,500'
-    },
-    {
-      image: 'https://mediarem.metrolist.net/metrolist/listingpics/bigphoto/2024/07/10/436450f6-5f36-4527-a340-0ed455e0ba8e.jpg',
-      address: '456 Elm St, Folsom, CA',
-      price: '$320,000',
-      bedrooms: '6',
-      bathrooms: '6',
-      sqft: '5,200'
-    },
-    {
-      image: 'https://mediarem.metrolist.net/metrolist/listingpics/bigphoto/2024/07/10/58b26077-e4cb-4605-8d1b-9242540a0d82.jpg',
-      address: '789 Oak St, Folsom, CA',
-      price: '$275,000',
-      bedrooms: '5',
-      bathrooms: '5',
-      sqft: '4,900'
-    },
-    {
-      image: 'https://mediarem.metrolist.net/metrolist/listingpics/bigphoto/2024/07/10/c6ac2e8f-3fbe-4de6-84ce-088b95857d6e.jpg',
-      address: '101 Maple St, Folsom, CA',
-      price: '$300,000',
-      bedrooms: '6',
-      bathrooms: '6',
-      sqft: '5,100'
-    },
-    {
-      image: 'https://mediarem.metrolist.net/metrolist/listingpics/bigphoto/2024/07/11/fca35bca-af04-4ed6-ac5c-2e35153e7b16.jpg',
-      address: '202 Pine St, Folsom, CA',
-      price: '$350,000',
-      bedrooms: '5',
-      bathrooms: '5',
-      sqft: '6,500'
-    },
-    {
-      image: 'https://mediarem.metrolist.net/metrolist/listingpics/bigphoto/2024/07/11/44f8b9af-4ede-4ea5-9bfe-b86cf99f666a.jpg',
-      address: '303 Birch St, Folsom, CA',
-      price: '$280,000',
-      bedrooms: '6',
-      bathrooms: '6',
-      sqft: '4,800'
-    }
-  ];
 
   const open = Boolean(anchorEl);
   const id = open ? 'simple-popover' : undefined;
