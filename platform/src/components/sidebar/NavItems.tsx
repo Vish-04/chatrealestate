@@ -8,7 +8,6 @@ export const sidebar = (setDrawerContent: (content: string) => void, setDrawerOp
         title: 'New Chat', 
         onClick: async (e) => {
             setDrawerContent('New Chat');
-            setDrawerOpen(false);
             setDrawerOpen(true);
         } 
     }, 
@@ -17,7 +16,6 @@ export const sidebar = (setDrawerContent: (content: string) => void, setDrawerOp
         title: 'Chat History', 
         onClick: (e) => {
             setDrawerContent('Chat History');
-            setDrawerOpen(false);
             setDrawerOpen(true);
         }
     }, 

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import '../styles/animations.css';
 import { Josefin_Sans } from "next/font/google";
 import { ThemeProvider } from '@mui/material/styles';
 import { theme } from "@/utils/theme";

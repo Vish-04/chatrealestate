@@ -13,16 +13,10 @@ const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })<{
   open?: boolean;
 }>(({ theme, open }) => ({
   flexGrow: 1,
-  transition: theme.transitions.create(['margin', 'width'], {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.leavingScreen,
-  }),
+  width: 'min-content',
   marginLeft: `-${drawerWidth}px`,
   ...(open && {
-    transition: theme.transitions.create(['margin', 'width'], {
-      easing: theme.transitions.easing.easeOut,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
+
     marginLeft: 0,
   }),
 }));
@@ -56,10 +50,6 @@ export default function PersistentDrawer({ open, handleDrawerClose, content }: P
             boxSizing: 'border-box',
             position: 'absolute',
             zIndex: 1,
-            transition: theme.transitions.create(['width', 'margin'], {
-              easing: theme.transitions.easing.sharp,
-              duration: theme.transitions.duration.leavingScreen,
-            }),
             ...(open ? {
               width: drawerWidth,
               marginLeft: 0,

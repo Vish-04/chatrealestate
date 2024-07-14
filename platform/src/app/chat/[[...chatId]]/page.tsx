@@ -6,6 +6,7 @@ import { useParams } from 'next/navigation';
 import { Box } from '@mui/material';
 import SideBar from '@/components/sidebar/Sidebar';
 import PersistentDrawer from '@/components/sidebar/PersistentDrawer';
+import Chatbox from '@/components/chatbox/Chatbox';
 
 const ChatPage = () => {
   const params = useParams();
@@ -24,6 +25,7 @@ const ChatPage = () => {
         setDrawerContent={setDrawerContent} 
         setDrawerOpen={setDrawerOpen} 
       />
+
       <PersistentDrawer 
         open={drawerOpen} 
         handleDrawerClose={handleDrawerClose} 
@@ -31,8 +33,7 @@ const ChatPage = () => {
       />   
 
       {/* CHAT BOX */}
-      <Box className={`h-[100vh] p-4 relative flex flex-col items-center transition-all duration-500 text-center justify-between ${drawerOpen ? 'w-[calc(100vw-300px-67px)]' : 'w-[calc(100vw-67px)]'}`}>
-      </Box>
+      <Chatbox drawerOpen={drawerOpen} />
     </Box>
   )
 }
