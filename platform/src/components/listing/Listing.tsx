@@ -1,6 +1,6 @@
 import { Box } from '@mui/material'
 import React from 'react'
-import Image from 'next/image'
+import Image from "next/legacy/image"
 import { Typography } from '@mui/material'
 
 type ListingType = {
