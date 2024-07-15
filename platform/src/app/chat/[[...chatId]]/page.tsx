@@ -1,19 +1,39 @@
 "use client"
 
 // ** Next Imports
-import React from 'react'
+import {useState, useEffect} from 'react'
 import { useParams } from 'next/navigation';
-import { Box } from '@mui/material';
+
+// ** MUI Imports
+import  Box from '@mui/material/Box';
+
+// ** Custom Imports
 import SideBar from '@/components/sidebar/Sidebar';
 import PersistentDrawer from '@/components/sidebar/PersistentDrawer';
 import Chatbox from '@/components/chatbox/Chatbox';
 
+// ** Type Imports
+import { ChatHistoryType } from '@/utils/types';
+
+
 const ChatPage = () => {
   const params = useParams();
-  const slug = params.chatId || '';
+  const chatId = params.chatId || 'newChat';
 
-  const [drawerOpen, setDrawerOpen] = React.useState(false);
-  const [drawerContent, setDrawerContent] = React.useState<React.ReactNode>(null);
+  // TODO: useState to for chatstatus
+  const chatStatus = "collectInfo"
+
+  console.log(chatId)
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [drawerContent, setDrawerContent] = useState<React.ReactNode>(null);
+
+
+  // TODO: useState to for chatHistory
+  const [chatHistory, setChatHistory] = useState<ChatHistoryType[]>([])
+
+  // TODO:
+  // Function to get chat information from DB
+  // Function to get chatstatus from DB
 
   const handleDrawerClose = () => {
     setDrawerOpen(false);
