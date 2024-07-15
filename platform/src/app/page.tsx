@@ -24,6 +24,7 @@ export default function Home() {
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const { user, isLoading } = useUser()
+  const [inputValue, setInputValue] = useState<string>('');
 
   const handleClick = (event: any) => {
     event.preventDefault();
@@ -118,7 +119,7 @@ export default function Home() {
             </Typography>
           </Box>
   
-          <HorizontalScroller />
+          <HorizontalScroller setInputValue={setInputValue} />
   
           {/* CALL TO ACTION + TITLES */}
   
@@ -128,6 +129,8 @@ export default function Home() {
               <Box id='finput' className='w-full flex flex-row items-center justify-between gap-2 fade-in-on-scroll cursor-pointer border mb-14 mt-10  rounded-md transition-all ease-in-out duration-300 ' >
   
               <TextField variant='outlined' color='secondary' fullWidth autoComplete='false' placeholder='Start Typing...'
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
               InputProps={{
                 endAdornment: <IconSend type='submit' size={30} stroke={2} className='text-[white] mr-2 hover:cursor-pointer hover:text-pink-500 transition-all ease-in-out duration-300' onClick={handleClick} />,
                 style: { border: 'none', boxShadow: 'none' }

@@ -1,19 +1,65 @@
 "use client"
 
 // ** Next Imports
-import React from 'react'
+import {useState, useEffect} from 'react'
 import { useParams } from 'next/navigation';
-import { Box } from '@mui/material';
+
+// ** MUI Imports
+import  Box from '@mui/material/Box';
+
+// ** Custom Imports
 import SideBar from '@/components/sidebar/Sidebar';
 import PersistentDrawer from '@/components/sidebar/PersistentDrawer';
 import Chatbox from '@/components/chatbox/Chatbox';
 
-const ChatPage = () => {
-  const params = useParams();
-  const slug = params.chatId || '';
+// ** Type Imports
+import { ChatHistoryType, UserType, UserPreferencesType } from '@/utils/types';
 
-  const [drawerOpen, setDrawerOpen] = React.useState(false);
-  const [drawerContent, setDrawerContent] = React.useState<React.ReactNode>(null);
+// ** Auth Imports
+import { useUser } from '@auth0/nextjs-auth0/client';
+
+
+const ChatPage = () => {
+
+  const {user, isLoading} = useUser();
+
+  const params = useParams();
+  const chatId = params.chatId || 'newChat';
+
+  // TODO: useState to for chatstatus
+  const chatStatus = "collectInfo"
+
+  useEffect(() => {
+    const fetchUser = async () =>{
+      const response = await fetch('/api/auth/user', {
+        method: 'POST',
+        body: JSON.stringify({ email: user?.email }),
+      });
+      const data = await response.json();
+      console.log(data)
+      setUserInfo([data, data]);
+    }
+
+    if (user?.email) {
+      fetchUser();
+    }
+
+  }, [user?.email])
+
+  console.log(chatId)
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [drawerContent, setDrawerContent] = useState<React.ReactNode>(null);
+
+  const [inputValue, setInputValue] = useState<string>('')
+
+  const [userInfo, setUserInfo] = useState<[UserType, UserPreferencesType] | []>([])
+
+  // TODO: useState to for chatHistory
+  const [chatHistory, setChatHistory] = useState<ChatHistoryType[]>([])
+
+  // TODO:
+  // Function to get chat information from DB
+  // Function to get chatstatus from DB
 
   const handleDrawerClose = () => {
     setDrawerOpen(false);
@@ -33,7 +79,10 @@ const ChatPage = () => {
       />   
 
       {/* CHAT BOX */}
-      <Chatbox drawerOpen={drawerOpen} />
+      <Chatbox drawerOpen={drawerOpen} setInputValue={setInputValue} inputValue={inputValue} />
+
+      {/* CHAT INTERFACE */}
+
     </Box>
   )
 }
