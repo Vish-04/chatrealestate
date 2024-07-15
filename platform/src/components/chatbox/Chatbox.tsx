@@ -2,11 +2,15 @@ import React from 'react';
 import { Box, Button, Typography, TextField, Popper, ClickAwayListener } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { IconSend } from '@tabler/icons-react';
-import Listing from '../listing/Listing';
-import { examplePromptsOne, examplePromptsTwo, exampleListings } from '@/utils/vars';
 import HorizontalScroller from './HorizontalScroller';
 
-const Chatbox = ({drawerOpen}: {drawerOpen: boolean}) => {
+type ChatBoxProps = {
+  drawerOpen: boolean
+  setInputValue: (value: string) => void
+  inputValue: string
+}
+
+const Chatbox = ({drawerOpen, setInputValue, inputValue}: ChatBoxProps) => {
     const theme = useTheme();
 
     return (
@@ -24,12 +28,13 @@ const Chatbox = ({drawerOpen}: {drawerOpen: boolean}) => {
 
 
       {/* HORIZONTAL SCROLLER */}
-      <HorizontalScroller />
+      <HorizontalScroller setInputValue={setInputValue} />
 
+      {/* TODO: ON SUBMIT QUERY THE MODEL */}
       <Box className='w-[64%] px-4 py-3'>
         <form>
           <Box id='finput' className='w-full flex flex-row items-center justify-between gap-2  cursor-pointer border mb-14 mt-10  rounded-md transition-all ease-in-out duration-300 ' >
-            <TextField variant='outlined' color='secondary' fullWidth autoComplete='false' placeholder='Start Typing...'
+            <TextField value={inputValue} onChange={(e) => setInputValue(e.target.value)} variant='outlined' color='secondary' fullWidth autoComplete='false' placeholder='Start Typing...'
               InputProps={{
                 endAdornment: <IconSend type='submit' size={30} stroke={2} className='text-[white] mr-2 hover:cursor-pointer hover:text-pink-500 transition-all ease-in-out duration-300' />,
                 style: { border: 'none', boxShadow: 'none' }
