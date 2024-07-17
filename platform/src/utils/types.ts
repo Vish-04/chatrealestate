@@ -18,7 +18,7 @@ export type MessageType = {
   content: string,
   componentProps?: {
     componentType: string,
-    value: any,
+    value?: any,
     [key: string]: any
   }
 }

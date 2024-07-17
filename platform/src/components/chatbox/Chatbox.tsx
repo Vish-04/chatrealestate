@@ -8,9 +8,10 @@ type ChatBoxProps = {
   drawerOpen: boolean
   setInputValue: (value: string) => void
   inputValue: string
+  handleClick: () => void
 }
 
-const Chatbox = ({drawerOpen, setInputValue, inputValue}: ChatBoxProps) => {
+const Chatbox = ({drawerOpen, setInputValue, inputValue, handleClick}: ChatBoxProps) => {
     const theme = useTheme();
 
     return (
@@ -36,7 +37,10 @@ const Chatbox = ({drawerOpen, setInputValue, inputValue}: ChatBoxProps) => {
           <Box id='finput' className='w-full flex flex-row items-center justify-between gap-2  cursor-pointer border mb-14 mt-10  rounded-md transition-all ease-in-out duration-300 ' >
             <TextField value={inputValue} onChange={(e) => setInputValue(e.target.value)} variant='outlined' color='secondary' fullWidth autoComplete='false' placeholder='Start Typing...'
               InputProps={{
-                endAdornment: <IconSend type='submit' size={30} stroke={2} className='text-[white] mr-2 hover:cursor-pointer hover:text-pink-500 transition-all ease-in-out duration-300' />,
+                endAdornment: <IconSend type='submit' onClick={(e)=>{
+                  e.preventDefault()
+                  handleClick()
+                }} size={30} stroke={2} className='text-[white] mr-2 hover:cursor-pointer hover:text-pink-500 transition-all ease-in-out duration-300' />,
                 style: { border: 'none', boxShadow: 'none' }
               }}
               sx={{

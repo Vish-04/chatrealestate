@@ -57,7 +57,7 @@ exports.onExecutePostLogin = async (event, api) => {
     user_id: userId,
     budget: 0,
     locations: [],
-    window_shopping: true,
+    window_shopping: undefined,
     house_descriptions: [],
     size_of_house:[],
     beds_baths: [],
