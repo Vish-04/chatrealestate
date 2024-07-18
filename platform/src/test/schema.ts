@@ -19,6 +19,7 @@
 // - property types
 
 // Listings
+// lisintg_id
 // active: boolean
 // listing_url: string
 // Zipcode: string
