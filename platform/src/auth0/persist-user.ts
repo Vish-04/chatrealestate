@@ -47,7 +47,7 @@ exports.onExecutePostUserRegistration = async (event, api) => {
   const userPreferences = {
     user_id: userId,
     email: event.user.email,
-    budget: 0,
+    budget: [],
     locations: [],
     window_shopping: undefined,
     house_descriptions: [],

@@ -34,13 +34,14 @@ export default function ChatSlider({value, setValue}: {value: number[], setValue
           {value[0] >= 1000000 ? `${(value[0] / 1000000).toFixed(1)}M` : value[0] >= 1000 ? `${(value[0] / 1000).toFixed(1)}K` : value[0]}
         </Typography>
       <Slider
-        getAriaLabel={() => 'Temperature range'}
+        getAriaLabel={() => 'Budget range'}
         value={value.map(inverseScale)}
         defaultValue={[0, 66, 100]}
         onChange={handleChange}
         valueLabelDisplay="off"
         min={0}
         max={100}
+        step={1} // Adjust step to account for the scale
         className='mx-10'
         color='secondary'
       />

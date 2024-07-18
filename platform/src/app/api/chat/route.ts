@@ -40,7 +40,7 @@ export const POST = async (req: NextRequest) => {
 
     let classificationPromptTemplate = `Your job is when given the user question, the conversation history, a stringified JSON of the users information which includes their preferences in terms of what kind of houses they are looking for, to return a stringified JSON object containing an updated user information object with fields updated or answered from the user question, with an extra key value pair, with key as "responseType" and value as the key of any of the users information that needs to be updated. Be sure to include all of the previous fields in the user information object in your response
     
-    For example, if the input is, as following: user information :{"locations":[], "budget":[], "house_descriptions":"A small cozy house", "size_of_house":[1000,2000], "beds_baths":[], "property_types":["apartment", "condo"]} user question: "I'm looking for houses around Gold River" Your output should be: ${JSON.stringify({"locations":["Gold River"], "budget":[], "house_descriptions":"A small cozy house", "size_of_house":[1000,2000], "beds_baths":[], "property_types":["apartment", "condo"], responseType: "budget"})}. This is because the users question includes a location, so the user information object is updated with the location "Gold River", and because the first unfilled section is budget, the responseType is set to budget. Ensure you only respond with a stringified JSON object and no other characters or words besides that. If i run JSON.parse(yourResponse) I should get a valid json with these strict typings. Ensure you do not change the names of the keys, they must stay the same, you can just change the values, only if the user inquiry has updated or new information. If all information is filled, or you are unsure what the responseType should be, make it equal to "generic". Remeber it is highly important that your response should be ONLY A JSON STRINGIFIED OBJECT. do not use the example to populate the object, but only the information below.
+    For example, if the input is, as following: user information :{"locations":[], "budget":[], "house_descriptions":"A small cozy house", "size_of_house":[1000,2000], "beds_baths":[]} user question: "I'm looking for houses around Gold River" Your output should be: ${JSON.stringify({"locations":["Gold River"], "budget":[], "house_descriptions":"A small cozy house", "size_of_house":[1000,2000], "beds_baths":[], responseType: "budget"})}. This is because the users question includes a location, so the user information object is updated with the location "Gold River", and because the first unfilled section is budget, the responseType is set to budget. Ensure you only respond with a stringified JSON object and no other characters or words besides that. If i run JSON.parse(yourResponse) I should get a valid json with these strict typings. Ensure you do not change the names of the keys, they must stay the same, you can just change the values, only if the user inquiry has updated or new information. If all information is filled, or you are unsure what the responseType should be, make it equal to "generic". Remeber it is highly important that your response should be ONLY A JSON STRINGIFIED OBJECT. do not use the example to populate the object, but only the information below.
     
     Conversation History: """ ${formattedHistory} """
     User Question: """ ${prompt} """
@@ -84,16 +84,15 @@ export const POST = async (req: NextRequest) => {
             items: { type: "string" }, // Added items property
             description: "An array of numbers of the number of beds and bathrooms the user is looking for"
           },
-          property_types: {
-            type: "array",
-            items: { type: "string" }, // Added items property
-            description: "An array of strings of the type of property the user is looking for"
-          },
           budget: {
             type: "array",
             items: { type: "number" }, // Added items property
             description: "An array of two numbers of the budget range of the user"
-          }
+          },
+          window_shopping: {
+            type: "boolean",
+            description: "A boolean of whether the user is seriously thinking about buying a house in the next 2 years"
+          },
         },
         required: ["responseType"],
 
@@ -140,14 +139,15 @@ export const POST = async (req: NextRequest) => {
         generationPromptTemplate += `\n\nIn your response, make sure that you not only give them what they want, but also inquire if they are seriously thinking about buying a house in the next 2 years in a subtle fashion. Asking something like "Just wondering, do you plan on buying a house in the next 2 years or so?" or something along the lines that flows well with your response is advised`;
         componentType = 'boolean';
       }
-      if (updatedUserInfo.responseType === 'house_description') {
+      if(updatedUserInfo.responseType === 'size_of_house'){
+        generationPromptTemplate += `\n\nIn your response, make sure that you not only give them what they want, but also inquire about their ideal size of house in a subtle fashion, the size being square feet. Asking something like "whats an ideal size of a house in square feet" or something along the lines that flows well with your response is advised`;
+
+      }
+      if (updatedUserInfo.responseType === 'house_descriptions') {
         generationPromptTemplate += `\n\nIn your response, make sure that you not only give them what they want, but also inquire about their ideal house description in a subtle fashion. Asking something like "whats are you looking for in the house" or something along the lines that flows well with your response is advised`;
       }
       if (updatedUserInfo.responseType === 'beds_bath') {
         generationPromptTemplate += `\n\nIn your response, make sure that you not only give them what they want, but also inquire about their ideal number of beds and bathrooms in a subtle fashion. Asking something like "whats are you looking for in the house" or something along the lines that flows well with your response is advised`;
-      }
-      if (updatedUserInfo.responseType === 'property') {
-        generationPromptTemplate += `\n\In your response, make sure that you not only give them what they want, but also inquire about their ideal property type in a subtle fashion. Property type refers to if they are looking to rent, buy, just look, single family homes, condos, multi family rentals, single rooms etc etc.`;
       }
 
     } catch (error) {

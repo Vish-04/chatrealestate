@@ -27,8 +27,7 @@ const ChatPage = () => {
   const params = useParams();
   const chatId = params.chatId || 'newChat';
 
-  // TODO: useState to for chatstatus
-  const chatStatus = "collectInfo"
+  console.log("CHAT ID", chatId)
 
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [drawerContent, setDrawerContent] = useState<React.ReactNode>(null);
@@ -37,12 +36,22 @@ const ChatPage = () => {
 
   const [userInfo, setUserInfo] = useState<[UserType, UserPreferencesType] | []>([])
 
+  const [chatHistory, setChatHistory] = useState<ChatHistoryType>({
+    chatId: chatId as string,
+    messages: [{role: "system", content: "You are an ai real estate agent who is helping users find the perfect home. You are also a helpful assistant that can help users with their questions. Answer professionally and in 1-2 sentences. Additionally use any and all of the data about the user provided to you to help make ur descision"}]
+  })
+
   useEffect(() => {
     const fetchUser = async () =>{
       const response = await fetch('/api/auth/user', {
         method: 'POST',
         body: JSON.stringify({ email: user?.email }),
       });
+
+      if (response.status !== 200) {
+        window.location.href = "/api/auth/login"
+      }
+
       const data = await response.json();
       console.log("USER INFODATA", data)
       setUserInfo(data);
@@ -50,15 +59,10 @@ const ChatPage = () => {
 
     if (user?.email) {
       fetchUser();
+    } else {
     }
 
   }, [user?.email])
-
-  // TODO: useState to for chatHistory
-  const [chatHistory, setChatHistory] = useState<ChatHistoryType>({
-    chatId: chatId as string,
-    messages: [{role: "system", content: "You are an ai real estate agent who is helping users find the perfect home. You are also a helpful assistant that can help users with their questions. Answer professionally and in 1-2 sentences. Additionally use any and all of the data about the user provided to you to help make ur descision"}]
-  })
 
   // TODO:
   // Function to get chat information from DB
@@ -69,15 +73,25 @@ const ChatPage = () => {
   };
 
   const handleClick = async () => {
+
+    if (chatId === "newChat") {
+      // TODO: Create endpoint that does the following
+      // Add chat to user
+      // Create new chat object with system prompt, chat id, and initial response
+      setChatHistory({
+        chatId: chatId as string,
+        messages: [{role: "system", content: "You are an ai real estate agent who is helping users find the perfect home. You are also a helpful assistant that can help users with their questions. Answer professionally and in 1-2 sentences. Additionally use any and all of the data about the user provided to you to help make ur descision"}]
+      })
+    }
+
     const userInformation = {
-      name: userInfo[0]?.name,
-      locations: userInfo[1]?.locations,
-      budget: userInfo[1]?.budget,
-      property_types: userInfo[1]?.property_types,
-      beds_baths: userInfo[1]?.beds_baths,
-      size_of_house: userInfo[1]?.size_of_house,
-      house_descriptions: userInfo[1]?.house_descriptions,
-      window_shopping: userInfo[1]?.window_shopping
+      name: userInfo[0]?.name?.S,
+      locations: userInfo[1]?.locations.L,
+      budget: userInfo[1]?.budget.L,
+      beds_baths: userInfo[1]?.beds_baths.L,
+      size_of_house: userInfo[1]?.size_of_house.L,
+      house_descriptions: userInfo[1]?.house_descriptions.L ,
+      window_shopping: userInfo[1]?.window_shopping?.BOOL || undefined
     }
 
     console.log("USER INFO", userInformation)
@@ -87,7 +101,6 @@ const ChatPage = () => {
             { role: "user", content: inputValue}
         ]
     });
-    console.log(inputValue)
     const response = await fetch(`/api/chat`, {
         method: 'POST',
         headers: {
@@ -101,7 +114,6 @@ const ChatPage = () => {
     })
 
     const data = await response.json()
-    console.log(data)
     setChatHistory({
         ...chatHistory,
         messages: [...chatHistory.messages, 
@@ -112,7 +124,6 @@ const ChatPage = () => {
         } ]
     });
 
-    console.log("UPDATED USER INFO", data.updatedUserInfo);
 
     // Update userInfo with matching fields from data.updatedUserInfo
     if (data.updatedUserInfo) {
@@ -120,10 +131,10 @@ const ChatPage = () => {
             if (prevUserInfo.length === 0) {
                 return [data.updatedUserInfo, {} as UserPreferencesType];
             }
-            const updatedUser = { ...prevUserInfo[0], ...data.updatedUserInfo };
-            return [updatedUser, prevUserInfo[1]];
+            return [prevUserInfo[0], {...prevUserInfo[1], ...data.updatedUserInfo}];
         });
     }
+    console.log("What would have been updated",  [userInfo[0], {...userInfo[1], ...data.updatedUserInfo}])
 }
 
   return (

@@ -55,7 +55,7 @@ exports.onExecutePostLogin = async (event, api) => {
 
   const userPreferences = {
     user_id: userId,
-    budget: 0,
+    budget: [],
     locations: [],
     window_shopping: undefined,
     house_descriptions: [],
