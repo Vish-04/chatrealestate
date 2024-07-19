@@ -46,7 +46,7 @@ export const POST = async function handler(req: NextRequest) {
 
     // Budget
     if (formObject.Budget?.length >= 2) {
-      filters.push("#price >= :minPrice OR #price <= :maxPrice");
+      filters.push("#price >= :minPrice AND #price <= :maxPrice");
       expressionAttributeNames["#price"] = "listing_detail_price";
       expressionAttributeValues[":minPrice"] = { N: formObject.Budget[0].toString() };
       expressionAttributeValues[":maxPrice"] = { N: formObject.Budget[1].toString() };
