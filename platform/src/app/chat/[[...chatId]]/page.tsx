@@ -22,6 +22,7 @@ import { chatStarter } from '@/utils/vars';
 
 // ** UUID Imports
 import { v4 as uuidv4 } from 'uuid';
+import Home from '@/app/page';
 
 const ChatPage = () => {
 
@@ -32,7 +33,6 @@ const ChatPage = () => {
   const params = useParams();
   const chatId = params.chatId || 'newChat';
   const query = useSearchParams();
-  console.log("CHAT ID", chatId)
 
   // ** Drawer States
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -60,7 +60,6 @@ const ChatPage = () => {
       }
 
       const data = await response.json();
-      console.log("USER INFODATA", data)
       setUserInfo(data);
     }
 
@@ -71,7 +70,7 @@ const ChatPage = () => {
 
   }, [user?.email])
 
-  // CODE TO FETCH CHAT HISTORY
+  // Fetch Chat History
   useEffect(() => {
     const fetchChatHistory = async () => {
       const response = await fetch('/api/chat/fetch', {
@@ -86,8 +85,13 @@ const ChatPage = () => {
         const data = await response.json();
         setChatHistory({
           chatId: chatId as string,
-          messages: data.messages.map((msg: any) => JSON.parse(msg.S))
+          messages: data.messages.L.map((msg: any) => ({
+            role: msg.M.role.S,
+            content: msg.M.content.S,
+            componentProps: msg.M.componentProps?.M
+          }))
         });
+        console.log("FETCHED CHAT HISTORY")
       } else {
         console.error('Error fetching chat history');
       }
@@ -96,20 +100,26 @@ const ChatPage = () => {
     if (chatId !== 'newChat' && user?.email) {
       fetchChatHistory();
     }
+
+    // If the query has an initial message, handle the click
     if (query.get('initialMessage')) {
       handleClick()
     }
-  }, [chatId, user?.email]);
+  }, []);
 
+  // Drawer open/close
   const handleDrawerClose = () => {
     setDrawerOpen(false);
   };
 
+  // If enter is clicked
   const handleClick = async () => {
 
+    // If New chat
     if (chatId === "newChat") {
+      console.log("in new chat")
       const chat_uuid = uuidv4();
-      console.log("IN")
+      console.log(inputValue, user?.email, chat_uuid)
       const response = await fetch('/api/chat/create', {
         method: 'POST',
         body: JSON.stringify({ email: user?.email, chat_uuid: chat_uuid, initialMessage: inputValue }),
@@ -122,11 +132,10 @@ const ChatPage = () => {
       if (response.status !== 200) {
         console.log("Error creating chat")
       } else {
-        window.location.href = `/chat/${chat_uuid}`;
+        window.location.href = `/chat/${chat_uuid}?initialMessage=${inputValue}`;
       }
+      // Normal handle click
     } else {
-
-      
             const userInformation = {
               name: userInfo[0]?.name?.S,
               locations: userInfo[1]?.locations.L,
@@ -137,13 +146,14 @@ const ChatPage = () => {
               window_shopping: userInfo[1]?.window_shopping?.BOOL || undefined
             }
       
-            console.log("USER INFO", userInformation)
+            // Update chat history first
             setChatHistory({
                 ...chatHistory,
                 messages: [...chatHistory.messages, 
                     { role: "user", content: inputValue}
                 ]
             });
+            // get response
             const response = await fetch(`/api/chat`, {
                 method: 'POST',
                 headers: {
@@ -157,6 +167,7 @@ const ChatPage = () => {
             })
       
             const data = await response.json()
+            // Update chat history
             setChatHistory({
                 ...chatHistory,
                 messages: [...chatHistory.messages, 
@@ -166,7 +177,9 @@ const ChatPage = () => {
                     }
                 } ]
             });
-      
+            console.log("UPDATED IN CLICK")
+            
+            // actually update the table
             const updateChatTable = async (chatHistory: ChatHistoryType) => {
               try {
                 const response = await fetch('/api/chat/update', {
@@ -193,15 +206,15 @@ const ChatPage = () => {
               }
           };
       
-          await updateChatTable({
-            ...chatHistory,
-            messages: [...chatHistory.messages, 
-                { role: "user", content: inputValue},
-                { role: "assistant", content: data.content, componentProps: {
-                    componentType: data.componentType
-                }
-            } ]
-        });
+        //   await updateChatTable({
+        //     ...chatHistory,
+        //     messages: [...chatHistory.messages, 
+        //         { role: "user", content: inputValue},
+        //         { role: "assistant", content: data.content, componentProps: {
+        //             componentType: data.componentType
+        //         }
+        //     } ]
+        // });
       
           // Update userInfo with matching fields from data.updatedUserInfo
           if (data.updatedUserInfo) {
@@ -249,6 +262,7 @@ removeQueryParameters();
         />
       : 
         <ChatInterface 
+          key={JSON.stringify(chatHistory)}
           drawerOpen={drawerOpen} 
           setInputValue={setInputValue} 
           inputValue={inputValue} 
@@ -260,7 +274,8 @@ removeQueryParameters();
       {/* CHAT INTERFACE */}
       
     </Box> : <>
-    Loading...</>
+    Loading...
+    </>
   )
 }
 

@@ -24,7 +24,7 @@ export const POST = withApiAuthRequired(async function handler(req: NextRequest)
   const params = {
     TableName: process.env.CHATS_TABLE!,
     Key: {
-      chat_uuid: { S: chat_uuid },
+      chat_id: { S: chat_uuid },
       email: { S: email },
     },
   };

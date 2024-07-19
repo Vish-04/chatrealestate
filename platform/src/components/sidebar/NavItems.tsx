@@ -7,8 +7,7 @@ export const sidebar = (setDrawerContent: (content: string) => void, setDrawerOp
         icon: <IconEdit size={27} stroke={1.5} className='text-[#6f6f6f] hover:text-white transition-colors ease-in-out duration-300 m-2' />, 
         title: 'New Chat', 
         onClick: async (e) => {
-            setDrawerContent('New Chat');
-            setDrawerOpen(true);
+            window.location.href = '/chat';
         } 
     }, 
     { 

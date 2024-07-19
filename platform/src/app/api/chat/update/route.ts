@@ -21,6 +21,12 @@ export const POST = withApiAuthRequired(async function handler(req: NextRequest)
     return NextResponse.json({ message: 'Invalid request body' }, { status: 400 });
   }
 
+  const formattedChatObject = {
+    chat_id: { S: chatObject.chatId },
+    email: { S: email },
+    messages: { L: chatObject.messages.map((msg: any) => ({M :{role: {S: msg.role}, content: {S: msg.content}, componentProps: {M: msg.componentProps}}}) ) },
+  };
+
   const params = {
     TableName: process.env.CHATS_TABLE!,
     Key: {

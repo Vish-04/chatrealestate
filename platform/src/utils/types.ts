@@ -23,8 +23,26 @@ export type MessageType = {
   }
 }
 
+export type DynamoDBMessageType = {
+  role: {S: string},
+  content: {S: string},
+  componentProps?: {
+      M: {
+        componentType: {S: string},
+        value?: {S: string},
+        [key: string]: any
+      }
+  }
+}
+
 export type ChatHistoryType = {
   chatId: string,
+  messages: MessageType[]
+}
+
+export type DynamoDBChatHistoryType = {
+  chatId: string,
+  email: string,
   messages: MessageType[]
 }
 

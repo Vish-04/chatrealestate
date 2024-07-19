@@ -59,8 +59,6 @@ export const POST = withApiAuthRequired(async function handler(
 
     const preferencesCommand = new ScanCommand(preferencesParams);
     const preferencesResult = await dynamoDBClient.send(preferencesCommand);
-    console.log("RES", result)
-    console.log("PREF", preferencesResult)
     if (result.Items?.length === 0 || preferencesResult.Items?.length === 0) {
       return NextResponse.json({ message: 'User not found' }, { status: 404 });
     }

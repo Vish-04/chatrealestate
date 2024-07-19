@@ -22,18 +22,22 @@ export const POST = withApiAuthRequired(async function handler(req: NextRequest)
     return NextResponse.json({ message: 'Method not allowed' }, { status: 405 });
   }
 
-  const { email, chat_uuid, initialMessage } = await req.json();
+  const { email, chat_uuid, initialMessage } = await req.json() as ChatCreateRequestBody;
 
   if (!email || !chat_uuid || !initialMessage) {
     return NextResponse.json({ message: 'Invalid request body' }, { status: 400 });
   }
+
+  console.log("EMAIL", email)
+  console.log("CHAT_UUID", chat_uuid)
+  console.log("INITIAL MESSAGE", initialMessage)
 
   const chatItem = {
     TableName: process.env.CHATS_TABLE!,
     Item: {
       chat_id: { S: chat_uuid },
       email: { S: email },
-      messages: { L: [{M: dynamodbChatStarter}, {M: {role: "user", content: initialMessage}}] },
+      messages: { L: [{M: dynamodbChatStarter}, {M: {role: {S: "user"}, content: {S: initialMessage}}}] },
       createdAt: { S: new Date().toISOString() },
     },
   };
