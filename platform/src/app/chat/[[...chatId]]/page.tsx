@@ -22,7 +22,6 @@ import { chatStarter } from '@/utils/vars';
 
 // ** UUID Imports
 import { v4 as uuidv4 } from 'uuid';
-import Home from '@/app/page';
 
 const ChatPage = () => {
 
