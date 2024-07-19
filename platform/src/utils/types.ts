@@ -29,24 +29,24 @@ export type ChatHistoryType = {
 }
 
 export type UserType = {
-  user_id: string;
-  email: string;
-  name?: string;
-  profileimgUrl?: string;
-  createdAt?: string;
-  updatedAt?: string;
-  chats?: string[];
+  user_id: {S: string};
+  email: {S: string};
+  name?: {S: string};
+  profileimgUrl?: {S: string};
+  createdAt?: {S: string};
+  updatedAt?: {S: string};
+  chats?: {L: string[]};
   [key: string]: any;
 };
 
 export type UserPreferencesType = {
-  user_id: string;
-  email: string;
-  budget: number;
-  locations: string[];
-  window_shopping: boolean;
-  house_descriptions: string[];
-  size_of_house: string[];
-  beds_baths: string[];
-  property_types: string[];
+  user_id: {S: string};
+  email: {S: string};
+  budget: {L: number[]};
+  locations: {L: string[]};
+  window_shopping: {BOOL: boolean};
+  house_descriptions: {L: string[]};
+  size_of_house: {L: number[]};
+  beds_baths: {L: number[]};
+  property_types: {L: string[]};
 };

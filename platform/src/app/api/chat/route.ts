@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { withApiAuthRequired } from '@auth0/nextjs-auth0';
 import { OpenAI } from '@langchain/openai';
 import { ChatHistoryType } from '@/utils/types';
 import { ChatOpenAI } from "@langchain/openai";
@@ -11,7 +12,7 @@ type BodyPayloadType = {
   userInfo: any
 };
 
-export const POST = async (req: NextRequest) => {
+export const POST = withApiAuthRequired(async (req: NextRequest) => {
   try {
     const { prompt, chatHistory, userInfo } = (await req.json()) as BodyPayloadType;
     console.log("USER INFO", userInfo)
@@ -111,9 +112,17 @@ export const POST = async (req: NextRequest) => {
       .pipe(parser);
 
     // Invoke the runnable with the classification response
-    const updatedUserInfo = await runnable.invoke([
+    const updatedUserInfo= (await runnable.invoke([
       new HumanMessage(classificationResponse),
-    ]);
+    ])) as {
+      responseType: string,
+      locations: string[],
+      house_descriptions: string[],
+      size_of_house: number[],
+      beds_baths: number[],
+      budget: number[],
+      window_shopping: boolean
+    }  
 
     console.log("JSON OBJ", updatedUserInfo)
 
@@ -166,4 +175,4 @@ export const POST = async (req: NextRequest) => {
     console.error('Error querying OpenAI:', error);
     return NextResponse.json({ message: 'Internal server error' }, { status: 500 });
   }
-};
+});

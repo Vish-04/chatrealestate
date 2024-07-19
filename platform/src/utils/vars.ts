@@ -3,6 +3,16 @@ import { SidebarType, ListingType } from "./types"
 // ** Icons Imports
 import { IconEdit, IconMessageCircle, IconSend } from '@tabler/icons-react'; 
 
+export const chatStarter = {
+    role: "system", 
+    content:  "You are an ai real estate agent who is helping users find the perfect home. You are also a helpful assistant that can help users with their questions. Answer professionally and in 1-2 sentences. Additionally use any and all of the data about the user provided to you to help make ur descision"
+  }
+
+  export const dynamodbChatStarter = {
+      role: {S:"system"}, 
+      content: {S:"You are an ai real estate agent who is helping users find the perfect home. You are also a helpful assistant that can help users with their questions. Answer professionally and in 1-2 sentences. Additionally use any and all of the data about the user provided to you to help make ur descision"}
+  }
+
 export const examplePromptsOne = [
     "Cheap homes in Folsom",
     "4-bed in Sacramento",
