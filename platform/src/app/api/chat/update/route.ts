@@ -24,7 +24,20 @@ export const POST = withApiAuthRequired(async function handler(req: NextRequest)
   const formattedChatObject = {
     chat_id: { S: chatObject.chatId },
     email: { S: email },
-    messages: { L: chatObject.messages.map((msg: any) => ({M :{role: {S: msg.role}, content: {S: msg.content}, componentProps: {M: msg.componentProps}}}) ) },
+    messages: {
+      L: chatObject.messages.map((msg: any) => ({
+        M: {
+          role: { S: msg.role },
+          content: { S: msg.content },
+          componentProps: msg.componentProps ? {
+            M: {
+              componentType: { S: msg.componentProps.componentType || '' },
+              value: { S: JSON.stringify(msg.componentProps.value) || '' }
+            }
+          } : { NULL: true }
+        }
+      }))
+    }
   };
 
   const params = {
@@ -35,11 +48,12 @@ export const POST = withApiAuthRequired(async function handler(req: NextRequest)
     },
     UpdateExpression: 'SET messages = :messages',
     ExpressionAttributeValues: {
-      ':messages': { L: chatObject.messages.map((msg: any) => ({ S: JSON.stringify(msg) })) },
+      ':messages': { L: formattedChatObject.messages.L }, // Ensure the correct format
     },
   };
 
   try {
+    //@ts-ignore
     const command = new UpdateItemCommand(params);
     await dynamoDBClient.send(command);
     return NextResponse.json({ message: 'Chat history updated successfully' }, { status: 200 });

@@ -31,7 +31,7 @@ const ChatPage = () => {
   const [userInfo, setUserInfo] = useState<[UserType, UserPreferencesType] | []>([])
 
   const params = useParams();
-  const chatId = params.chatId || 'newChat';
+  const chatId = params.chatId || ['newChat'];
   const query = useSearchParams();
 
   // ** Drawer States
@@ -41,10 +41,10 @@ const ChatPage = () => {
   // Chat Message States
   const [inputValue, setInputValue] = useState<string>(query.get('initialMessage') || '')
   const [chatHistory, setChatHistory] = useState<ChatHistoryType>({
-    chatId: chatId as string,
+    chatId: chatId[0] as string,
     messages: [chatStarter]
   })
-    
+
 
   // Fetch user information from DB
   useEffect(() => {
@@ -84,11 +84,14 @@ const ChatPage = () => {
       if (response.status === 200) {
         const data = await response.json();
         setChatHistory({
-          chatId: chatId as string,
+          chatId: chatId[0] as string,
           messages: data.messages.L.map((msg: any) => ({
-            role: msg.M.role.S,
-            content: msg.M.content.S,
-            componentProps: msg.M.componentProps?.M
+            role: msg.M?.role?.S,
+            content: msg.M?.content?.S,
+            componentProps: {
+              componentType: msg.M?.componentProps?.M?.componentType?.S,
+              value: msg.M?.componentProps?.M?.value?.S
+            }
           }))
         });
         console.log("FETCHED CHAT HISTORY")
@@ -102,10 +105,13 @@ const ChatPage = () => {
     }
 
     // If the query has an initial message, handle the click
-    if (query.get('initialMessage')) {
+    if (query.get('initialMessage') && chatHistory.messages.length === 2) {
       handleClick()
+      const url = new URL(window.location.href);
+      url.search = '';
+      window.history.replaceState({}, document.title, url.toString());
     }
-  }, []);
+  }, [chatId[0], user?.email, query.get('initialMessage')]);
 
   // Drawer open/close
   const handleDrawerClose = () => {
@@ -116,7 +122,7 @@ const ChatPage = () => {
   const handleClick = async () => {
 
     // If New chat
-    if (chatId === "newChat") {
+    if (chatId[0] === "newChat") {
       console.log("in new chat")
       const chat_uuid = uuidv4();
       console.log(inputValue, user?.email, chat_uuid)
@@ -124,10 +130,6 @@ const ChatPage = () => {
         method: 'POST',
         body: JSON.stringify({ email: user?.email, chat_uuid: chat_uuid, initialMessage: inputValue }),
       });
-      setChatHistory({
-        chatId: chatId as string,
-        messages: [chatStarter, {role: "user", content: inputValue}]
-      })
 
       if (response.status !== 200) {
         console.log("Error creating chat")
@@ -135,7 +137,7 @@ const ChatPage = () => {
         window.location.href = `/chat/${chat_uuid}?initialMessage=${inputValue}`;
       }
       // Normal handle click
-    } else {
+    } else if(user) {
             const userInformation = {
               name: userInfo[0]?.name?.S,
               locations: userInfo[1]?.locations.L,
@@ -206,15 +208,15 @@ const ChatPage = () => {
               }
           };
       
-        //   await updateChatTable({
-        //     ...chatHistory,
-        //     messages: [...chatHistory.messages, 
-        //         { role: "user", content: inputValue},
-        //         { role: "assistant", content: data.content, componentProps: {
-        //             componentType: data.componentType
-        //         }
-        //     } ]
-        // });
+          await updateChatTable({
+            ...chatHistory,
+            messages: [...chatHistory.messages, 
+                { role: "user", content: inputValue},
+                { role: "assistant", content: data.content, componentProps: {
+                    componentType: data.componentType
+                }
+            } ]
+        });
       
           // Update userInfo with matching fields from data.updatedUserInfo
           if (data.updatedUserInfo) {
@@ -228,14 +230,6 @@ const ChatPage = () => {
           console.log("What would have been updated",  [userInfo[0], {...userInfo[1], ...data.updatedUserInfo}])
     }
 // Function to remove query parameters from the URL without reloading the page
-const removeQueryParameters = () => {
-  const url = new URL(window.location.href);
-  url.search = '';
-  window.history.replaceState({}, document.title, url.toString());
-};
-
-// Call the function to remove query parameters
-removeQueryParameters();
 }
 
   return (
