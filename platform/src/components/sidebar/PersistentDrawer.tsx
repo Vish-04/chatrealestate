@@ -79,17 +79,15 @@ export default function PersistentDrawer({ open, handleDrawerClose, content }: P
         anchor="left"
         open={open}
       >
-        <DrawerHeader>
-          <Typography variant="h6" className="ml-5">{content.title}</Typography>
+        <DrawerHeader className='flex flex-row justify-between'>
+          <Typography variant="h6">{content.title}</Typography>
           <IconButton onClick={handleDrawerClose}>
             {theme.direction === 'ltr' ? <IconChevronLeft color={theme.palette.text.secondary} /> : <IconChevronRight color={theme.palette.text.secondary} />}
           </IconButton>
         </DrawerHeader>
-        <Card>
           <CardContent>
             {drawerComponents[content.component]}
           </CardContent>
-        </Card>
       </Drawer>
       <Main open={open}>
         <DrawerHeader />

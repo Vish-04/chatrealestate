@@ -1,28 +1,33 @@
 // ** Next Imports
-import {useState} from 'react'
+import React from 'react'
 
 // ** MUI Imports
 import Box from '@mui/material/Box'
 import Message from './message/Message'
 
+// ** Type Imports
+import { ChatHistoryType } from '@/utils/types'
+
 // ** Custom Components Imports
-import ChatSlider from './message/message-components/ChatSlider'
-import ChatBoolean from './message/message-components/ChatBoolean'
-import { ChatHistoryType, MessageType } from '@/utils/types'
+import SpinnerComponent from '../common/CustomSpinner'
 
 type ChatWindowProps = {
   chatHistory: ChatHistoryType
+  loading: boolean
 }
 
-const ChatWindow = ({chatHistory}: ChatWindowProps) => {
+const ChatWindow = ({chatHistory, loading}: ChatWindowProps) => {
   
   return (
-    <Box className='w-[64%] h-full px-4 py-3 overflow-y-auto'>
-      {chatHistory.messages?.L.map((chat, index) => (
-        <Message key={`${chat.M?.role.S}-${index}`} message={chat} componentType={chat.M?.componentProps?.M.componentType.S} />
-      ))}
-      
+    <Box className='w-full h-full overflow-x-hidden overflow-y-auto flex items-center justify-center'>
+      <Box className='w-[64%] h-full px-4 py-3'>
+        {chatHistory.messages?.L.map((chat, index) => (
+          <Message key={`${chat.M?.role.S}-${index}`} message={chat} componentType={chat.M?.componentProps?.M.componentType.S} />
+        ))}
+      {loading && <SpinnerComponent />}
+        
 
+      </Box>
     </Box>
   )
 }

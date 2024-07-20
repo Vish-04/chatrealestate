@@ -108,11 +108,23 @@ export const updateChatTable = async ({ chatHistory, setChatHistory, email }: Up
 export async function generateChatTitle(initialMessage: string, model:any): Promise<string> {
 
 const prompt = `
-    Given the following initial inquiry to a chat realestate ai, generate a concise and descriptive title for the chat:
+    Given the following initial inquiry to a chat realestate ai, generate a concise and descriptive title for the chat in under 7 tokens:
     Initial Inquiry: ${initialMessage}
-    Title:
-`;
+    Title: `;
 
 const response = await model.invoke([new HumanMessage(prompt)]);
 return response.trim();
+}
+
+export const deleteChat = async (chatId:string, email:string) => {
+  const response = await fetch('/api/chat/delete', {
+    method: 'POST',
+    body: JSON.stringify({ chat_id: chatId, email: email }),
+  });
+
+  if (response.status === 200) {
+    console.log('Chat deleted successfully');
+  } else {
+    console.error('Error deleting chat');
+  }
 }

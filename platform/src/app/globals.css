@@ -7,3 +7,18 @@
     text-wrap: balance;
   }
 }
+
+/* Custom scrollbar styles */
+::-webkit-scrollbar {
+  width: 8px; /* Adjust the width to make it thinner */
+}
+
+::-webkit-scrollbar-track {
+  background: #4e4e4e; /* Light background color for the track */
+  border-radius: 10px; /* More curved track */
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #9c27b0; /* Tailwind's bg-pink-500 color */
+  border-radius: 10px; /* More curved thumb */
+}

@@ -19,8 +19,9 @@ type ChatInterfaceProps = {
     handleClick: () => void
     userInfo: UserType | undefined
     chatId: string
+    loading: boolean
   }
-const ChatInterface = ({drawerOpen, setInputValue, inputValue, chatHistory, handleClick, userInfo, chatId}: ChatInterfaceProps) => {
+const ChatInterface = ({drawerOpen, setInputValue, inputValue, chatHistory, handleClick, userInfo, chatId, loading}: ChatInterfaceProps) => {
 
     
 
@@ -32,7 +33,7 @@ const ChatInterface = ({drawerOpen, setInputValue, inputValue, chatHistory, hand
         </Box>}
 
         {/* CHAT WINDOW */}
-        <ChatWindow chatHistory={chatHistory} />
+        <ChatWindow chatHistory={chatHistory} loading={loading} />
 
         {/* INPUT */}
         <Box className='w-[64%] px-4 py-3 overflow-y-hidden'>

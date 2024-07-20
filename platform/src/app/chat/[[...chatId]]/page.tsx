@@ -23,6 +23,7 @@ import { chatStarter } from '@/utils/vars';
 // ** UUID Imports
 import { v4 as uuidv4 } from 'uuid';
 import { createChat, fetchChatHistory, fetchUser, updateChatTable } from '@/utils/db';
+import SpinnerComponent from '@/components/common/CustomSpinner';
 
 const ChatPage = () => {
 
@@ -38,6 +39,9 @@ const ChatPage = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [drawerContent, setDrawerContent] = useState<DrawerContentType>({title: '', component: '', props: {}});
 
+  // ** Spinner States
+  const [spinnerOpen, setSpinnerOpen] = useState(false);
+
   // Chat Message States
   const [inputValue, setInputValue] = useState<string>(query.get('initialMessage') || '')
   const [chatHistory, setChatHistory] = useState<ChatHistoryType>({
@@ -45,6 +49,7 @@ const ChatPage = () => {
     email: {S: user?.email as string},
     messages: {L: [{M: chatStarter}]}
   })
+  const [loading, setLoading] = useState(false);
 
 
   // Fetch user information from DB
@@ -59,7 +64,9 @@ const ChatPage = () => {
   useEffect(() => {
   
     if (chatId[0] !== 'newChat' && user?.email) {
+      setLoading(true);
       fetchChatHistory({ chatId: chatId, email: user?.email, setChatHistory });
+      setLoading(false);
     }
 
     // If the query has an initial message, handle the click
@@ -79,7 +86,7 @@ const ChatPage = () => {
 
   // If enter is clicked
   const handleClick = async () => {
-
+    setLoading(true);
     // If New chat
     if (chatId[0] === "newChat" && user?.email) {
       createChat({ email: user?.email as string, initialMessage: inputValue })
@@ -116,10 +123,6 @@ const ChatPage = () => {
       })
 
       const data = await response.json()
-      // Update chat history
-      
-      
-      // actually update the table
 
 
     await updateChatTable({chatHistory: {
@@ -130,19 +133,21 @@ const ChatPage = () => {
               M: {componentType: {S: data.componentType}}
           }}
       } ]
-  }}, setChatHistory, email: user?.email as string});
-
+    }}, setChatHistory, email: user?.email as string});
+    
     // Update userInfo with matching fields from data.updatedUserInfo
     if (data.updatedUserInfo) {
-        setUserInfo(prevUserInfo => {
-            if (prevUserInfo.length === 0) {
-                return [data.updatedUserInfo, {} as UserPreferencesType];
-            }
-            return [prevUserInfo[0], {...prevUserInfo[1], ...data.updatedUserInfo}];
-        });
+      setUserInfo(prevUserInfo => {
+        if (prevUserInfo.length === 0) {
+          return [data.updatedUserInfo, {} as UserPreferencesType];
+        }
+        return [prevUserInfo[0], {...prevUserInfo[1], ...data.updatedUserInfo}];
+      });
     }
     console.log("What would have been updated",  [userInfo[0], {...userInfo[1], ...data.updatedUserInfo}])
+    
     // TODO: Function to update userInfo
+    setLoading(false);
   }
 
 // Function to remove query parameters from the URL without reloading the page
@@ -181,6 +186,7 @@ const ChatPage = () => {
           handleClick={handleClick}
           userInfo={userInfo[0]}
           chatId={chatId[0]}
+          loading={loading}
         />
       }
 
