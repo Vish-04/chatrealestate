@@ -20,11 +20,23 @@ const ChatWindow = ({chatHistory, loading}: ChatWindowProps) => {
   
   return (
     <Box className='w-full h-full overflow-x-hidden overflow-y-auto flex items-center justify-center'>
-      <Box className='w-[64%] h-full px-4 py-3'>
+      <Box className='w-[64%] h-full px-4 py-3 gap-8 flex flex-col'>
         {chatHistory.messages?.L.map((chat, index) => (
           <Message key={`${chat.M?.role.S}-${index}`} message={chat} componentType={chat.M?.componentProps?.M.componentType.S} />
         ))}
-      {loading && <SpinnerComponent />}
+      {loading && 
+        <div className="banter-loader">
+          <div className="banter-loader__box"></div>
+          <div className="banter-loader__box"></div>
+          <div className="banter-loader__box"></div>
+          <div className="banter-loader__box"></div>
+          <div className="banter-loader__box"></div>
+          <div className="banter-loader__box"></div>
+          <div className="banter-loader__box"></div>
+          <div className="banter-loader__box"></div>
+          <div className="banter-loader__box"></div>
+        </div>
+      }
         
 
       </Box>

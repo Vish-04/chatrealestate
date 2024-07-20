@@ -18,6 +18,7 @@ export const theme = createTheme({
         },
         info: {
             main: 'rgba(225, 225, 225, 0.7)'
-        }
+        },
+        divider: '#3a3939'
     },
 });
