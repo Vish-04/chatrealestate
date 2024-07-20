@@ -1,6 +1,7 @@
 import { withApiAuthRequired } from '@auth0/nextjs-auth0';
 import { DynamoDBClient, UpdateItemCommand } from '@aws-sdk/client-dynamodb';
 import { NextRequest, NextResponse } from 'next/server';
+import { ChatHistoryType } from '@/utils/types';
 
 const dynamoDBClient = new DynamoDBClient({
   region: process.env.REGION || '',
@@ -15,35 +16,24 @@ export const POST = withApiAuthRequired(async function handler(req: NextRequest)
     return NextResponse.json({ message: 'Method not allowed' }, { status: 405 });
   }
 
-  const { chatObject, email } = await req.json();
+  const { chatObject, email } = await req.json() as { chatObject: ChatHistoryType, email: string };
 
   if (!chatObject || !chatObject.chatId || !email) {
     return NextResponse.json({ message: 'Invalid request body' }, { status: 400 });
   }
 
   const formattedChatObject = {
-    chat_id: { S: chatObject.chatId },
+    chat_id: { S: chatObject.chatId.S },
     email: { S: email },
     messages: {
-      L: chatObject.messages.map((msg: any) => ({
-        M: {
-          role: { S: msg.role },
-          content: { S: msg.content },
-          componentProps: msg.componentProps ? {
-            M: {
-              componentType: { S: msg.componentProps.componentType || '' },
-              value: { S: JSON.stringify(msg.componentProps.value) || '' }
-            }
-          } : { NULL: true }
-        }
-      }))
+      L: chatObject.messages.L.map((msg: any) => (msg))
     }
   };
 
   const params = {
     TableName: process.env.CHATS_TABLE!,
     Key: {
-      chat_id: { S: chatObject.chatId },
+      chat_id: { S: chatObject.chatId.S },
       email: { S: email },
     },
     UpdateExpression: 'SET messages = :messages',

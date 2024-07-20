@@ -19,8 +19,8 @@ const ChatWindow = ({chatHistory}: ChatWindowProps) => {
   console.log(chatHistory)
   return (
     <Box className='w-[64%] h-full px-4 py-3 overflow-y-auto'>
-      {chatHistory.messages?.map((chat) => (
-        <Message message={{ role: chat.role, content: chat.content }} componentType={chat.componentProps?.componentType} />
+      {chatHistory.messages?.L.map((chat, index) => (
+        <Message key={`${chat.M?.role.S}-${index}`} message={chat} componentType={chat.M?.componentProps?.M.componentType.S} />
       ))}
       
 

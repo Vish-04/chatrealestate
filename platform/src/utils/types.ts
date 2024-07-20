@@ -5,25 +5,15 @@ export type SidebarType = {
   }
 
 export type ListingType = {
-  image: string,
-  address: string,
-  price: string,
-  bedrooms: string,
-  bathrooms: string,
-  sqft: string
+  image: {S: string},
+  address: {S: string},
+  price: {S: string},
+  bedrooms: {S: string},
+  bathrooms: {S: string},
+  sqft: {S: string}
 }
 
-export type MessageType = {
-  role: string,
-  content: string,
-  componentProps?: {
-    componentType: string,
-    value?: any,
-    [key: string]: any
-  }
-}
-
-export type DynamoDBMessageType = {
+export type MessageType = {M: {
   role: {S: string},
   content: {S: string},
   componentProps?: {
@@ -33,17 +23,12 @@ export type DynamoDBMessageType = {
         [key: string]: any
       }
   }
-}
+}}
 
 export type ChatHistoryType = {
-  chatId: string,
-  messages: MessageType[]
-}
-
-export type DynamoDBChatHistoryType = {
-  chatId: string,
-  email: string,
-  messages: MessageType[]
+  chatId: {S: string},
+  email: {S:string},
+  messages:{L: MessageType[]}
 }
 
 export type UserType = {

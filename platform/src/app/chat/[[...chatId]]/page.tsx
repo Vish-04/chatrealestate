@@ -22,6 +22,7 @@ import { chatStarter } from '@/utils/vars';
 
 // ** UUID Imports
 import { v4 as uuidv4 } from 'uuid';
+import { createChat, fetchChatHistory, fetchUser, updateChatTable } from '@/utils/db';
 
 const ChatPage = () => {
 
@@ -30,7 +31,7 @@ const ChatPage = () => {
   const [userInfo, setUserInfo] = useState<[UserType, UserPreferencesType] | []>([])
 
   const params = useParams();
-  const chatId = params.chatId || ['newChat'];
+  const chatId = (params.chatId || ['newChat']) as string[];
   const query = useSearchParams();
 
   // ** Drawer States
@@ -40,71 +41,30 @@ const ChatPage = () => {
   // Chat Message States
   const [inputValue, setInputValue] = useState<string>(query.get('initialMessage') || '')
   const [chatHistory, setChatHistory] = useState<ChatHistoryType>({
-    chatId: chatId[0] as string,
-    messages: [chatStarter]
+    chatId: {S: chatId[0] as string},
+    email: {S: user?.email as string},
+    messages: {L: [{M: chatStarter}]}
   })
 
 
   // Fetch user information from DB
   useEffect(() => {
-    const fetchUser = async () =>{
-      const response = await fetch('/api/auth/user', {
-        method: 'POST',
-        body: JSON.stringify({ email: user?.email }),
-      });
-
-      // If user is not logged in, redirect to login
-      if (response.status !== 200) {
-        window.location.href = "/api/auth/login"
-      }
-
-      const data = await response.json();
-      setUserInfo(data);
-    }
 
     if (user?.email) {
-      fetchUser();
-    } else {
+      fetchUser({ email: user?.email, setUserInfo });
     }
-
   }, [user?.email])
 
   // Fetch Chat History
   useEffect(() => {
-    const fetchChatHistory = async () => {
-      const response = await fetch('/api/chat/fetch', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ chat_uuid: chatId[0], email: user?.email })
-      });
-
-      if (response.status === 200) {
-        const data = await response.json();
-        setChatHistory({
-          chatId: chatId[0] as string,
-          messages: data.messages.L.map((msg: any) => ({
-            role: msg.M?.role?.S,
-            content: msg.M?.content?.S,
-            componentProps: {
-              componentType: msg.M?.componentProps?.M?.componentType?.S,
-              value: msg.M?.componentProps?.M?.value?.S
-            }
-          }))
-        });
-        console.log("FETCHED CHAT HISTORY")
-      } else {
-        console.error('Error fetching chat history');
-      }
-    };
-
-    if (chatId !== 'newChat' && user?.email) {
-      fetchChatHistory();
+  
+    if (chatId[0] !== 'newChat' && user?.email) {
+      fetchChatHistory({ chatId: chatId, email: user?.email, setChatHistory });
     }
 
     // If the query has an initial message, handle the click
-    if (query.get('initialMessage') && chatHistory.messages.length === 2) {
+    if (query.get('initialMessage') && chatHistory.messages.L.length <= 2) {
+      
       handleClick()
       const url = new URL(window.location.href);
       url.search = '';
@@ -121,113 +81,70 @@ const ChatPage = () => {
   const handleClick = async () => {
 
     // If New chat
-    if (chatId[0] === "newChat") {
-      console.log("in new chat")
-      const chat_uuid = uuidv4();
-      console.log(inputValue, user?.email, chat_uuid)
-      const response = await fetch('/api/chat/create', {
-        method: 'POST',
-        body: JSON.stringify({ email: user?.email, chat_uuid: chat_uuid, initialMessage: inputValue }),
-      });
-
-      if (response.status !== 200) {
-        console.log("Error creating chat")
-      } else {
-        window.location.href = `/chat/${chat_uuid}?initialMessage=${inputValue}`;
-      }
+    if (chatId[0] === "newChat" && user?.email) {
+      createChat({ email: user?.email as string, initialMessage: inputValue })
       // Normal handle click
     } else if(user) {
-            const userInformation = {
-              name: userInfo[0]?.name?.S,
-              locations: userInfo[1]?.locations.L,
-              budget: userInfo[1]?.budget.L,
-              beds_baths: userInfo[1]?.beds_baths.L,
-              size_of_house: userInfo[1]?.size_of_house.L,
-              house_descriptions: userInfo[1]?.house_descriptions.L ,
-              window_shopping: userInfo[1]?.window_shopping?.BOOL || undefined
+      const userInformation = {
+        name: userInfo[0]?.name?.S,
+        locations: userInfo[1]?.locations.L,
+        budget: userInfo[1]?.budget.L,
+        beds_baths: userInfo[1]?.beds_baths.L,
+        size_of_house: userInfo[1]?.size_of_house.L,
+        house_descriptions: userInfo[1]?.house_descriptions.L ,
+        window_shopping: userInfo[1]?.window_shopping?.BOOL || undefined
+      }
+      
+      // Update chat history first
+      setChatHistory({
+          ...chatHistory,
+            messages: {L: [...chatHistory.messages.L, 
+                { M: {role: {S: "user"}, content: {S: inputValue}}}
+        ]}
+      });
+      // get response
+      const response = await fetch(`/api/chat`, {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ 
+              prompt: inputValue, 
+              chatHistory: chatHistory, 
+              userInfo: userInformation
+          })
+      })
+
+      const data = await response.json()
+      // Update chat history
+      
+      
+      // actually update the table
+
+
+    await updateChatTable({chatHistory: {
+      ...chatHistory,
+      messages: {L: [...chatHistory.messages.L, 
+          { M: {role: {S: "user"}, content: {S: inputValue}}},
+          { M: {role: {S: "assistant"}, content: {S: data.content}, componentProps: {
+              M: {componentType: {S: data.componentType}}
+          }}
+      } ]
+  }}, setChatHistory, email: user?.email as string});
+
+    // Update userInfo with matching fields from data.updatedUserInfo
+    if (data.updatedUserInfo) {
+        setUserInfo(prevUserInfo => {
+            if (prevUserInfo.length === 0) {
+                return [data.updatedUserInfo, {} as UserPreferencesType];
             }
-      
-            // Update chat history first
-            setChatHistory({
-                ...chatHistory,
-                messages: [...chatHistory.messages, 
-                    { role: "user", content: inputValue}
-                ]
-            });
-            // get response
-            const response = await fetch(`/api/chat`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ 
-                    prompt: inputValue, 
-                    chatHistory: chatHistory, 
-                    userInfo: userInformation
-                })
-            })
-      
-            const data = await response.json()
-            // Update chat history
-            setChatHistory({
-                ...chatHistory,
-                messages: [...chatHistory.messages, 
-                    { role: "user", content: inputValue},
-                    { role: "assistant", content: data.content, componentProps: {
-                        componentType: data.componentType
-                    }
-                } ]
-            });
-            console.log("UPDATED IN CLICK")
-            
-            // actually update the table
-            const updateChatTable = async (chatHistory: ChatHistoryType) => {
-              try {
-                const response = await fetch('/api/chat/update', {
-                  method: 'POST',
-                  headers: {
-                    'Content-Type': 'application/json',
-                  },
-                  body: JSON.stringify({
-                    chatObject: {
-                      chatId: chatHistory.chatId,
-                      messages: chatHistory.messages,
-                    },
-                    email: user?.email,
-                  }),
-                });
-      
-                if (response.status !== 200) {
-                  console.error('Error updating chat table');
-                } else {
-                  console.log('Chat table updated successfully');
-                }
-              } catch (error) {
-                console.error('Error updating chat table:', error);
-              }
-          };
-      
-          await updateChatTable({
-            ...chatHistory,
-            messages: [...chatHistory.messages, 
-                { role: "user", content: inputValue},
-                { role: "assistant", content: data.content, componentProps: {
-                    componentType: data.componentType
-                }
-            } ]
+            return [prevUserInfo[0], {...prevUserInfo[1], ...data.updatedUserInfo}];
         });
-      
-          // Update userInfo with matching fields from data.updatedUserInfo
-          if (data.updatedUserInfo) {
-              setUserInfo(prevUserInfo => {
-                  if (prevUserInfo.length === 0) {
-                      return [data.updatedUserInfo, {} as UserPreferencesType];
-                  }
-                  return [prevUserInfo[0], {...prevUserInfo[1], ...data.updatedUserInfo}];
-              });
-          }
-          console.log("What would have been updated",  [userInfo[0], {...userInfo[1], ...data.updatedUserInfo}])
     }
+    console.log("What would have been updated",  [userInfo[0], {...userInfo[1], ...data.updatedUserInfo}])
+    // TODO: Function to update userInfo
+  }
+
 // Function to remove query parameters from the URL without reloading the page
 }
 
@@ -246,7 +163,7 @@ const ChatPage = () => {
       />   
 
       {/* CHAT BOX */}
-      {chatHistory.messages.length === 1 ? 
+      {chatHistory.messages.L.length === 1 ? 
         <Chatbox 
           drawerOpen={drawerOpen} 
           setInputValue={setInputValue} 

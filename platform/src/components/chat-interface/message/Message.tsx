@@ -14,7 +14,7 @@ import ChatSlider from '@/components/chat-interface/message/message-components/C
 import ChatBoolean from '@/components/chat-interface/message/message-components/ChatBoolean'
 
 const Message = ({ message, componentType }: { message: MessageType, componentType: string | undefined }) => {
-  const isAssistant = message.role === 'assistant';
+  const isAssistant = message.M?.role?.S === 'assistant';
   const [sliderValue, setSliderValue] = useState<number[]>([0, 5000000])
   const [buttonValue, setButtonValue] = useState<boolean | null>(null)
   const handleButtonClick = (button: boolean) => {
@@ -33,7 +33,7 @@ const Message = ({ message, componentType }: { message: MessageType, componentTy
               height={50} 
               style={{ borderRadius: '50%' }} 
               />
-            <Typography>{message.content}</Typography>
+            <Typography>{message.M?.content?.S}</Typography>
             {componentType === 'budget' && <ChatSlider value={sliderValue} setValue={setSliderValue} />}
             {componentType === 'boolean' && 
               <ChatBoolean buttonOneText="I'm just window shopping!" buttonTwoText='I want to buy a home!' onButtonClick={handleButtonClick} selected={buttonValue} />
@@ -41,7 +41,7 @@ const Message = ({ message, componentType }: { message: MessageType, componentTy
           </Box>
         </Box>
     )
-  } else if(message.role === 'user') {
+  } else if(message.M?.role?.S === 'user') {
       return (
         <Box className="items-end flex-col flex">
             <Box 
@@ -56,7 +56,7 @@ const Message = ({ message, componentType }: { message: MessageType, componentTy
                 GU
               </Typography>
             </Box>
-            <Typography>{message.content}</Typography>
+            <Typography>{message.M?.content?.S}</Typography>
         </Box>
       )
   }

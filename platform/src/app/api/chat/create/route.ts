@@ -1,4 +1,4 @@
-import { dynamodbChatStarter } from '@/utils/vars';
+import { chatStarter } from '@/utils/vars';
 import { withApiAuthRequired } from '@auth0/nextjs-auth0';
 import { DynamoDBClient, PutItemCommand, UpdateItemCommand } from '@aws-sdk/client-dynamodb';
 import { NextRequest, NextResponse } from 'next/server';
@@ -34,7 +34,7 @@ export const POST = withApiAuthRequired(async function handler(req: NextRequest)
     Item: {
       chat_id: { S: chat_uuid },
       email: { S: email },
-      messages: { L: [{M: dynamodbChatStarter}, {M: {role: {S: "user"}, content: {S: initialMessage}}}] },
+      messages: { L: [{M: chatStarter}, {M: {role: {S: "user"}, content: {S: initialMessage}}}] },
       createdAt: { S: new Date().toISOString() },
     },
   };

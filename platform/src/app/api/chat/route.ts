@@ -35,8 +35,8 @@ export const POST = withApiAuthRequired(async (req: NextRequest) => {
 
 
     // Format chat history
-    const formattedHistory: string = chatHistory.messages?.map((entry: { role: string, content: string }) => {
-      return `${entry.role}: ${entry.content}`;
+    const formattedHistory: string = chatHistory.messages?.L.map((entry) => {
+      return `${entry.M.role.S}: ${entry.M.content.S}${entry.M.componentProps?.M.componentType?.S ? ` (Component Type: ${entry.M.componentProps?.M.componentType?.S})` : ''}${entry.M.componentProps?.M.componentValue?.S ? ` (Component Value: ${entry.M.componentProps?.M.componentValue?.S})` : ''}`;
     }).join('\n');
 
     let classificationPromptTemplate = `Your job is when given the user question, the conversation history, a stringified JSON of the users information which includes their preferences in terms of what kind of houses they are looking for, to return a stringified JSON object containing an updated user information object with fields updated or answered from the user question, with an extra key value pair, with key as "responseType" and value as the key of any of the users information that needs to be updated. Be sure to include all of the previous fields in the user information object in your response

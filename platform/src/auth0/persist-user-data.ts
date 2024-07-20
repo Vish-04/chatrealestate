@@ -11,7 +11,6 @@ const { v4: uuidv4 } = require('uuid');
 
 //@ts-ignore
 exports.onExecutePostLogin = async (event, api) => {
-  console.log("IN", event.user)
 
 
   // Configure AWS SDK
@@ -34,11 +33,9 @@ exports.onExecutePostLogin = async (event, api) => {
 
   try {
     const result = await dynamoDB.scan(searchParams).promise();
-    console.log("RES", result)
     if (result.Items.length <= 0) {    
 
   const userId = uuidv4();
-  console.log("USER", event.user)
   const user = {
     user_id: userId,
     email: event.user.email,
@@ -71,9 +68,7 @@ exports.onExecutePostLogin = async (event, api) => {
 
   try {
     await dynamoDB.put(params).promise();
-    console.log('User added to DynamoDB:', user);
     await dynamoDB.put(paramsTwo).promise()
-    console.log('UserPreferences added to DynamoDB:', userPreferences)
   } catch (error) {
     console.error('Error adding user to DynamoDB:', error);
   }
