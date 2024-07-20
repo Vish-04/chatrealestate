@@ -9,6 +9,7 @@ import { IconSend } from '@tabler/icons-react'
 // ** Custom Imports
 import ChatWindow from './ChatWindow'
 import { ChatHistoryType, MessageType, UserPreferencesType, UserType } from '@/utils/types'
+import Typography from '@mui/material/Typography'
 
 type ChatInterfaceProps = {
     drawerOpen: boolean
@@ -16,14 +17,24 @@ type ChatInterfaceProps = {
     inputValue: string
     chatHistory: ChatHistoryType
     handleClick: () => void
+    userInfo: UserType | undefined
+    chatId: string
   }
-const ChatInterface = ({drawerOpen, setInputValue, inputValue, chatHistory, handleClick}: ChatInterfaceProps) => {
+const ChatInterface = ({drawerOpen, setInputValue, inputValue, chatHistory, handleClick, userInfo, chatId}: ChatInterfaceProps) => {
 
     
 
   return (
-    <Box className={`h-[100vh] p-4 relative flex flex-col items-center ${drawerOpen ? 'w-[calc(100vw-300px-67px)]' : 'w-[calc(100vw-67px)]'}`}>
+    <Box className={`h-[100vh] p-4 relative flex flex-col items-center text-white ${drawerOpen ? 'w-[calc(100vw-300px-67px)]' : 'w-[calc(100vw-67px)]'}`}>
+        {/* CHAT TITLE */}
+       {userInfo &&  <Box className='w-full flex flex-row items-center justify-center'>
+            <Typography variant='h6'>Title: {userInfo.chats?.L.find((chat) => chat.M.chat_id.S === chatId)?.M.title.S}</Typography>
+        </Box>}
+
+        {/* CHAT WINDOW */}
         <ChatWindow chatHistory={chatHistory} />
+
+        {/* INPUT */}
         <Box className='w-[64%] px-4 py-3 overflow-y-hidden'>
               <Box id='finput' className='w-full flex flex-row items-center justify-between gap-2 fade-in-on-scroll cursor-pointer border mb-14 rounded-md transition-all ease-in-out duration-300'>
   

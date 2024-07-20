@@ -1,11 +1,27 @@
+// ** Next Imports
 import * as React from 'react';
-import { styled, useTheme } from '@mui/material/styles';
+
+// ** MUI Imports
 import Box from '@mui/material/Box';
 import Drawer from '@mui/material/Drawer';
 import CssBaseline from '@mui/material/CssBaseline';
 import IconButton from '@mui/material/IconButton';
-import { IconChevronRight, IconChevronLeft } from '@tabler/icons-react';
 import Typography from '@mui/material/Typography';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import CardHeader from '@mui/material/CardHeader';
+
+// ** Style Imports
+import { styled, useTheme } from '@mui/material/styles';
+
+// * Icon Imports
+import { IconChevronRight, IconChevronLeft } from '@tabler/icons-react';
+
+// ** Type Imports
+import { DrawerContentType, UserType } from '@/utils/types';
+
+// ** Util Imports
+import { drawerComponents } from './drawer-components/vars';
 
 const drawerWidth = 300;
 
@@ -32,7 +48,7 @@ const DrawerHeader = styled('div')(({ theme }) => ({
 interface PersistentDrawerProps {
   open: boolean;
   handleDrawerClose: () => void;
-  content: React.ReactNode;
+  content: DrawerContentType;
 }
 
 export default function PersistentDrawer({ open, handleDrawerClose, content }: PersistentDrawerProps) {
@@ -64,13 +80,16 @@ export default function PersistentDrawer({ open, handleDrawerClose, content }: P
         open={open}
       >
         <DrawerHeader>
+          <Typography variant="h6" className="ml-5">{content.title}</Typography>
           <IconButton onClick={handleDrawerClose}>
             {theme.direction === 'ltr' ? <IconChevronLeft color={theme.palette.text.secondary} /> : <IconChevronRight color={theme.palette.text.secondary} />}
           </IconButton>
         </DrawerHeader>
-        <Typography paragraph>
-          {content}
-        </Typography>
+        <Card>
+          <CardContent>
+            {drawerComponents[content.component]}
+          </CardContent>
+        </Card>
       </Drawer>
       <Main open={open}>
         <DrawerHeader />

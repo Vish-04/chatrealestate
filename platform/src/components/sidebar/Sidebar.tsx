@@ -1,14 +1,16 @@
 import React from 'react'
 import { Box, Tooltip, Typography, Button } from '@mui/material'
 import { sidebar } from './NavItems'
+import { DrawerContentType, UserType } from '@/utils/types';
 
 type SideBarProps = {
-    setDrawerContent: (content: string) => void;
+    setDrawerContent: (content: DrawerContentType) => void;
     setDrawerOpen: (open: boolean) => void;
+    userInfo: UserType | undefined;
 }
 
-const SideBar = ({ setDrawerContent, setDrawerOpen }: SideBarProps) => {
-  const items = sidebar(setDrawerContent, setDrawerOpen);
+const SideBar = ({ setDrawerContent, setDrawerOpen, userInfo }: SideBarProps) => {
+  const items = sidebar(setDrawerContent, setDrawerOpen, userInfo);
 
   return (
     <Box className="w-[67px] h-[100vh] border-r bg-[#111111] border-[#3a3939]  overflow-x-hidden flex flex-col items-center pt-4" sx={{ zIndex: 2 }}>

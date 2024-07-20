@@ -16,7 +16,6 @@ type ChatWindowProps = {
 
 const ChatWindow = ({chatHistory}: ChatWindowProps) => {
   
-  console.log(chatHistory)
   return (
     <Box className='w-[64%] h-full px-4 py-3 overflow-y-auto'>
       {chatHistory.messages?.L.map((chat, index) => (

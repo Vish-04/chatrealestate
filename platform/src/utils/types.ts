@@ -31,6 +31,13 @@ export type ChatHistoryType = {
   messages:{L: MessageType[]}
 }
 
+type UserChatType = {
+  M: {
+    chat_id: {S: string},
+    title: {S: string},
+  }
+}
+
 export type UserType = {
   user_id: {S: string};
   email: {S: string};
@@ -38,7 +45,7 @@ export type UserType = {
   profileimgUrl?: {S: string};
   createdAt?: {S: string};
   updatedAt?: {S: string};
-  chats?: {L: string[]};
+  chats?: {L: UserChatType[]};
   [key: string]: any;
 };
 
@@ -53,3 +60,9 @@ export type UserPreferencesType = {
   beds_baths: {L: number[]};
   property_types: {L: string[]};
 };
+
+export type DrawerContentType = {
+  title: string,
+  component: string,
+  props: any
+}

@@ -1,5 +1,7 @@
-import { UserType, UserPreferencesType, ChatHistoryType } from "./types";
+import {ChatHistoryType } from "./types";
 import { v4 as uuidv4 } from 'uuid';
+import { HumanMessage } from '@langchain/core/messages';
+
 
 type FetchUserType = {
     email: string,
@@ -97,9 +99,20 @@ export const updateChatTable = async ({ chatHistory, setChatHistory, email }: Up
         console.log('Chat table updated successfully');
 
         setChatHistory(chatHistory);
-      console.log("UPDATED IN CLICK")
       }
     } catch (error) {
       console.error('Error updating chat table:', error);
     }
 };
+
+export async function generateChatTitle(initialMessage: string, model:any): Promise<string> {
+
+const prompt = `
+    Given the following initial inquiry to a chat realestate ai, generate a concise and descriptive title for the chat:
+    Initial Inquiry: ${initialMessage}
+    Title:
+`;
+
+const response = await model.invoke([new HumanMessage(prompt)]);
+return response.trim();
+}

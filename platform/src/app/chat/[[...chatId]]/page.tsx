@@ -13,7 +13,7 @@ import PersistentDrawer from '@/components/sidebar/PersistentDrawer';
 import Chatbox from '@/components/chatbox/Chatbox';
 
 // ** Type Imports
-import { ChatHistoryType, UserType, UserPreferencesType } from '@/utils/types';
+import { ChatHistoryType, UserType, UserPreferencesType, DrawerContentType } from '@/utils/types';
 
 // ** Auth Imports
 import { useUser } from '@auth0/nextjs-auth0/client';
@@ -36,7 +36,7 @@ const ChatPage = () => {
 
   // ** Drawer States
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const [drawerContent, setDrawerContent] = useState<React.ReactNode>(null);
+  const [drawerContent, setDrawerContent] = useState<DrawerContentType>({title: '', component: '', props: {}});
 
   // Chat Message States
   const [inputValue, setInputValue] = useState<string>(query.get('initialMessage') || '')
@@ -63,7 +63,7 @@ const ChatPage = () => {
     }
 
     // If the query has an initial message, handle the click
-    if (query.get('initialMessage') && chatHistory.messages.L.length <= 2) {
+    if (query.get('initialMessage') && chatHistory.messages.L.length <= 2 && user?.email) {
       
       handleClick()
       const url = new URL(window.location.href);
@@ -154,6 +154,7 @@ const ChatPage = () => {
       <SideBar 
         setDrawerContent={setDrawerContent} 
         setDrawerOpen={setDrawerOpen} 
+        userInfo={userInfo[0]}
       />
 
       <PersistentDrawer 
@@ -178,6 +179,8 @@ const ChatPage = () => {
           inputValue={inputValue} 
           chatHistory={chatHistory}
           handleClick={handleClick}
+          userInfo={userInfo[0]}
+          chatId={chatId[0]}
         />
       }
 

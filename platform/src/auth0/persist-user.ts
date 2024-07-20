@@ -19,7 +19,6 @@ const { v4: uuidv4 } = require('uuid');
 
 //@ts-ignore
 exports.onExecutePostUserRegistration = async (event, api) => {
-  console.log("IN", event?.request?.ip)
 
   // Configure AWS SDK
   const dynamoDB = new AWS.DynamoDB.DocumentClient({
@@ -29,7 +28,6 @@ exports.onExecutePostUserRegistration = async (event, api) => {
   });
 
   const userId = uuidv4();
-  console.log("USER", event.user)
   const user = {
     user_id: userId,
     email: event.user.email,

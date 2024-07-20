@@ -1,7 +1,4 @@
-import { SidebarType, ListingType } from "./types"
-
-// ** Icons Imports
-import { IconEdit, IconMessageCircle, IconSend } from '@tabler/icons-react'; 
+import { ListingType } from "./types"
 
 export const chatStarter = {
     role: {S: "system"}, 
@@ -77,4 +74,3 @@ export const exampleListings: ListingType[] = [
       sqft: {S: '4,800'}
     }
   ];
-

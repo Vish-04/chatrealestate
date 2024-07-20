@@ -15,7 +15,6 @@ type BodyPayloadType = {
 export const POST = withApiAuthRequired(async (req: NextRequest) => {
   try {
     const { prompt, chatHistory, userInfo } = (await req.json()) as BodyPayloadType;
-    console.log("USER INFO", userInfo)
 
     if (!prompt || !chatHistory || !userInfo) {
       return NextResponse.json({ message: 'Missing Fields' }, { status: 400 });
@@ -49,7 +48,6 @@ export const POST = withApiAuthRequired(async (req: NextRequest) => {
 
     const classificationResponse = await classificationModel.invoke(classificationPromptTemplate);
 
-    console.log("CLASSIFICATION RES", classificationResponse)
 
     // Instantiate the parser
     const parser = new JsonOutputFunctionsParser();
@@ -124,7 +122,6 @@ export const POST = withApiAuthRequired(async (req: NextRequest) => {
       window_shopping: boolean
     }  
 
-    console.log("JSON OBJ", updatedUserInfo)
 
     let generationPromptTemplate = `You are an AI realtor assistant. You have a database of listings. Given the user information, conversation history, and user question, generate a response to the user question which is based on the conversation history and user information. Always be polite. Keep your responses short and concise.`;
     
@@ -132,7 +129,6 @@ export const POST = withApiAuthRequired(async (req: NextRequest) => {
     
     try{
 
-      console.log("JSON OBJ", updatedUserInfo)
       if(updatedUserInfo.responseType === 'name'){
         generationPromptTemplate += `\n\nIn your response, make sure that you not only give them what they want, but also inquire about their name in a subtle fashion. Asking something like "whats is a good name or nick name to call you by" or something along the lines that flows well with your response is advised`;
 
