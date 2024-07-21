@@ -119,7 +119,7 @@ export default function Home() {
             </Typography>
           </Box>
   
-          <HorizontalScroller setInputValue={setInputValue} />
+          <HorizontalScroller setInputValue={setInputValue} email={undefined} />
   
           {/* CALL TO ACTION + TITLES */}
   

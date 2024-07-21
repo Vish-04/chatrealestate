@@ -1,25 +1,34 @@
+// ** Next Imports
 import React from 'react';
-import { Box, Typography } from '@mui/material';
-import Listing from '../listing/Listing';
-import { examplePromptsOne, examplePromptsTwo, exampleListings } from '@/utils/vars';
+
+// ** MUI Imports
+import Box from '@mui/material/Box'
+import Typography from '@mui/material/Typography'
+
+// ** Components Imports
+import Listing from '../listing/Listing'
+
+// ** Util Imports
+import { examplePromptsOne, examplePromptsTwo, exampleListings } from '@/utils/vars'
 
 type HorizontalScrollerProps = {
     setInputValue: (value: string) => void
+    email: string | null | undefined
 }
 
-const HorizontalScroller = ({setInputValue}: HorizontalScrollerProps) => {
+const HorizontalScroller = ({setInputValue, email}: HorizontalScrollerProps) => {
   return (
     <Box className='w-[64%] flex flex-col justify-center items-center gap-2'>
       {/* EXAMPLE LISTINGS */}
       <Box className="w-full flex flex-row relative listings gap-2">
         <Box className="h-full flex listings-slide gap-2">
           {exampleListings.map((listing, index) => (
-            <Listing key={index} listing={listing} />
+            <Listing key={index} listing={listing} email={email} />
           ))}
         </Box>
         <Box className="h-full flex listings-slide gap-2">
           {exampleListings.map((listing, index) => (
-            <Listing key={index} listing={listing} />
+            <Listing key={index} listing={listing} email={email} />
           ))}
         </Box>
       </Box>

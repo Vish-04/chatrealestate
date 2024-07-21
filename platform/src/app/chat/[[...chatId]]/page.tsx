@@ -175,6 +175,7 @@ const ChatPage = () => {
           setInputValue={setInputValue} 
           inputValue={inputValue} 
           handleClick={handleClick}
+          email={user?.email}
         />
       : 
         <ChatInterface 

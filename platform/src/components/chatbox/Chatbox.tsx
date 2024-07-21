@@ -9,9 +9,10 @@ type ChatBoxProps = {
   setInputValue: (value: string) => void
   inputValue: string
   handleClick: () => void
+  email: string | null | undefined
 }
 
-const Chatbox = ({drawerOpen, setInputValue, inputValue, handleClick}: ChatBoxProps) => {
+const Chatbox = ({drawerOpen, setInputValue, inputValue, handleClick, email}: ChatBoxProps) => {
     const theme = useTheme();
 
     return (
@@ -29,7 +30,7 @@ const Chatbox = ({drawerOpen, setInputValue, inputValue, handleClick}: ChatBoxPr
 
 
       {/* HORIZONTAL SCROLLER */}
-      <HorizontalScroller setInputValue={setInputValue} />
+      <HorizontalScroller setInputValue={setInputValue} email={email} />
 
       {/* TODO: ON SUBMIT QUERY THE MODEL */}
       <Box className='w-[64%] px-4 py-3'>

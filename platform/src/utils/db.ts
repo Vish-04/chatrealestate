@@ -128,3 +128,18 @@ export const deleteChat = async (chatId:string, email:string) => {
     console.error('Error deleting chat');
   }
 }
+
+
+export const updateEngagements = async (listings_detail_label:string, zipcode:string, viewed:boolean, clicked:boolean, email:string) => {
+  const response = await fetch('/api/listings/update', {
+    method: 'POST',
+    body: JSON.stringify({ listings_detail_label: listings_detail_label, zipcode: zipcode, viewed: viewed, clicked: clicked, email: email }),
+  });
+
+  if (response.status === 200) {
+    console.log('Engagements updated successfully');
+  } else {
+    const data = await response.json();
+    console.error('Error updating engagements:', data);
+  }
+}

@@ -20,6 +20,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <link rel="icon" href="/logo.ico" />
+      </head>
       <body className={`${josefin.className} overflow-hidden`}>
         <UserProvider>
           <ThemeProvider theme={theme}>
