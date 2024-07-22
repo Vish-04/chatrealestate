@@ -52,7 +52,7 @@ const ListingDrawer = ({ open, onClose, listing, email }: ListingDrawerProps) =>
           <Box className={`flex flex-col gap-2 p-2`} sx={{ background: theme.palette.background.default, border: `1px solid ${theme.palette.divider}` }}>
             <Typography variant="h6">{listing.listings_detail_label?.S} - {new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(Number(listing.listing_detail_price?.N))}</Typography>
             <Typography variant="body1">{listing.bedrooms?.N} Bed {listing.bathrooms?.N} Bath {listing.square_footage?.N} sqft</Typography>
-            <ImageSlider listing={listing} />
+            <ImageSlider listing={listing} /> 
             {Object.keys(listing).map((key) => {
               if (!excludedFields.includes(key)) {
                 const value = listing[key];

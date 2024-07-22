@@ -26,7 +26,7 @@ const ChatInterface = ({drawerOpen, setInputValue, inputValue, chatHistory, hand
     
 
   return (
-    <Box className={`h-[100vh] p-4 relative flex flex-col items-center text-white ${drawerOpen ? 'w-[calc(100vw-300px-67px)]' : 'w-[calc(100vw-67px)]'}`}>
+    <Box className={`h-[100vh] p-4 relative flex flex-col items-center text-white w-[calc(100vw-67px)]`}>
         {/* CHAT TITLE */}
        {userInfo &&  <Box className='w-full flex flex-row items-center justify-center'>
             <Typography variant='subtitle1' color='text.secondary'>{userInfo.chats?.L.find((chat) => chat.M.chat_id.S === chatId)?.M.title.S}</Typography>

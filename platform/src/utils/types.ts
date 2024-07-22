@@ -31,10 +31,11 @@ export type ChatHistoryType = {
   messages:{L: MessageType[]}
 }
 
-type UserChatType = {
+export type UserChatType = {
   M: {
     chat_id: {S: string},
     title: {S: string},
+    updated: {S: string}
   }
 }
 

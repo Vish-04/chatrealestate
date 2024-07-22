@@ -72,7 +72,7 @@ export const POST = withApiAuthRequired(async function handler(req: NextRequest)
         },
         UpdateExpression: 'SET chats = list_append(if_not_exists(chats, :empty_list), :chats)',
         ExpressionAttributeValues: {
-          ':chats': { L: [{ M: {chat_id: {S: chat_uuid},title: {S: title}} }] },
+          ':chats': { L: [{ M: {chat_id: {S: chat_uuid},title: {S: title}, updated: {S: new Date().toISOString()}} }] },
           ':empty_list': { L: [] },
         },
       };

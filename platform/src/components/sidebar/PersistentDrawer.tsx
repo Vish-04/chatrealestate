@@ -3,47 +3,23 @@ import * as React from 'react';
 
 // ** MUI Imports
 import Box from '@mui/material/Box';
-import Drawer from '@mui/material/Drawer';
 import CssBaseline from '@mui/material/CssBaseline';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
-import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
-import CardHeader from '@mui/material/CardHeader';
+import Dialog from '@mui/material/Dialog';
+import DialogTitle from '@mui/material/DialogTitle';
+import DialogContent from '@mui/material/DialogContent';
+import Grow from '@mui/material/Grow';
 
 // ** Style Imports
-import { styled, useTheme } from '@mui/material/styles';
-
-// * Icon Imports
-import { IconChevronRight, IconChevronLeft } from '@tabler/icons-react';
+import { useTheme } from '@mui/material/styles';
 
 // ** Type Imports
-import { DrawerContentType, UserType } from '@/utils/types';
+import { DrawerContentType } from '@/utils/types';
 
 // ** Util Imports
 import { drawerComponents } from './drawer-components/vars';
-
-const drawerWidth = 300;
-
-const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })<{
-  open?: boolean;
-}>(({ theme, open }) => ({
-  flexGrow: 1,
-  width: 'min-content',
-  marginLeft: `-${drawerWidth}px`,
-  ...(open && {
-
-    marginLeft: 0,
-  }),
-}));
-
-const DrawerHeader = styled('div')(({ theme }) => ({
-  display: 'flex',
-  alignItems: 'center',
-  padding: theme.spacing(0, 1),
-  ...theme.mixins.toolbar,
-  justifyContent: 'flex-end',
-}));
 
 interface PersistentDrawerProps {
   open: boolean;
@@ -57,41 +33,33 @@ export default function PersistentDrawer({ open, handleDrawerClose, content }: P
   return (
     <Box sx={{ display: 'flex', position: 'relative' }}>
       <CssBaseline />
-      <Drawer
-        sx={{
-          width: drawerWidth,
-          flexShrink: 0,
-          whiteSpace: 'nowrap',
-          '& .MuiDrawer-paper': {
-            boxSizing: 'border-box',
+      <Dialog
+        open={open}
+        onClose={handleDrawerClose}
+        fullWidth
+        maxWidth="sm"
+        TransitionComponent={Grow}
+        PaperProps={{
+          sx: {
             position: 'absolute',
-            zIndex: 1,
-            ...(open ? {
-              width: drawerWidth,
-              marginLeft: 0,
-            } : {
-              width: 0,
-              marginLeft: `-${drawerWidth}px`,
-            }),
+            top: 0,
+            left: 1,
+            margin: 1,
+            height: 400, 
+            width: 250,  
+            border: `1px solid ${theme.palette.divider}`,
+            backgroundColor: '#171717', // Slightly lighter than background.paper
           },
         }}
-        variant="persistent"
-        anchor="left"
-        open={open}
+        BackdropProps={{
+          style: {
+            backgroundColor: 'transparent',
+          },
+        }}
       >
-        <DrawerHeader className='flex flex-row justify-between'>
-          <Typography variant="h6">{content.title}</Typography>
-          <IconButton onClick={handleDrawerClose}>
-            {theme.direction === 'ltr' ? <IconChevronLeft color={theme.palette.text.secondary} /> : <IconChevronRight color={theme.palette.text.secondary} />}
-          </IconButton>
-        </DrawerHeader>
-          <CardContent>
-            {drawerComponents[content.component]}
-          </CardContent>
-      </Drawer>
-      <Main open={open}>
-        <DrawerHeader />
-      </Main>
+        <Typography fontSize={16} paddingLeft={1} marginTop={1} paddingBottom={1} borderBottom={`1px solid ${theme.palette.divider}`}>{content.title}</Typography>
+          {drawerComponents[content.component]}
+      </Dialog>
     </Box>
   );
 }

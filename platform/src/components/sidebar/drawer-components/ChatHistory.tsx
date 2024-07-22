@@ -1,8 +1,7 @@
 // ** Next Imports
 import React, { useEffect, useState } from 'react'
-
 // ** Type Imports 
-import { UserType, UserPreferencesType } from '@/utils/types'
+import { UserType, UserPreferencesType, UserChatType } from '@/utils/types'
 
 // ** MUI Imports
 import Button from '@mui/material/Button'
@@ -11,7 +10,7 @@ import IconButton from '@mui/material/IconButton'
 import Typography from '@mui/material/Typography'
 
 // ** Tabler Icons
-import { IconTrash } from '@tabler/icons-react'
+import { IconFolderOpen, IconMessageCircle, IconTrash } from '@tabler/icons-react'
 
 // ** Auth Imports
 import { useUser } from '@auth0/nextjs-auth0/client'
@@ -20,9 +19,17 @@ import { useUser } from '@auth0/nextjs-auth0/client'
 import { fetchUser, deleteChat } from '@/utils/db'
 import SpinnerComponent from '@/components/common/CustomSpinner'
 
+// ** Style Imports
+import { useTheme } from '@mui/material/styles'
+import { format, isToday, isThisWeek, parseISO } from 'date-fns'
+
 const ChatHistory = () => {
+  const theme = useTheme()
   const { user, isLoading } = useUser()
   const [userInfo, setUserInfo] = useState<[UserType, UserPreferencesType] | []>([])
+  const [todayChats, setTodayChats] = useState<UserChatType[]>([])
+  const [lastWeekChats, setLastWeekChats] = useState<UserChatType[]>([])
+  const [olderChats, setOlderChats] = useState<UserChatType[]>([])
 
   useEffect(() => {
     if (user?.email) {
@@ -37,22 +44,56 @@ const ChatHistory = () => {
       fetchUser({ email: user.email, setUserInfo })
     }
   }
-  
+
+  const sortAndGroupChats = (chats: UserChatType[]) => {
+    const sortedChats = chats.sort((a, b) => new Date(b.M.updated.S).getTime() - new Date(a.M.updated.S).getTime())
+    const todayChats = sortedChats.filter(chat => isToday(parseISO(chat.M.updated.S)))
+    const lastWeekChats = sortedChats.filter(chat => isThisWeek(parseISO(chat.M.updated.S)) && !isToday(parseISO(chat.M.updated.S)))
+    const olderChats = sortedChats.filter(chat => !isThisWeek(parseISO(chat.M.updated.S)))
+
+    return { todayChats, lastWeekChats, olderChats }
+  }
+
+  useEffect(()=>{
+    const { todayChats, lastWeekChats, olderChats } = userInfo[0] ? sortAndGroupChats(userInfo[0]?.chats?.L || []) : { todayChats: [], lastWeekChats: [], olderChats: [] }
+    setTodayChats(todayChats)
+    setLastWeekChats(lastWeekChats)
+    setOlderChats(olderChats)
+  },[userInfo])
+
+  const renderChats = (chats: UserChatType[], label: string) => (
+    <Box>
+      <Typography pl={1} pt={1} pb={0.5} fontSize={14} className='text-[#6f6f6f]' sx={{borderBottom: `1px solid ${theme.palette.divider}`}}>{label}</Typography>
+      {chats.map((chat) => (
+        <Box key={chat.M.chat_id.S} className='flex flex-row justify-between transition-all cursor-pointer ease-in-out duration-300 p-1' sx={{borderBottom: `1px solid ${theme.palette.divider}`}} onClick={() => {window.location.href = `/chat/${chat.M.chat_id.S}`}}>
+          <Button fullWidth endIcon={
+            <IconTrash className='text-[#6f6f6f] hover:text-red-500 transition-colors ease-in-out duration-300' size={18} strokeWidth={1.5} />
+          } style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', textTransform: 'none' }}>
+            {chat.M.title.S.length > 25 ? chat.M.title.S.substring(0, 25) + '...' : chat.M.title.S}
+          </Button>
+        </Box>
+      ))}
+    </Box>
+  )
 
   return (
-    <Box className="flex flex-col gap-2 text-left">
-      {userInfo[0] ? userInfo[0]?.chats?.L.map((chat) => (
-        <Box key={chat.M.chat_id.S} className='flex flex-row justify-between'>
-          <Button className='text-left flex flex-row items-start' href={`/chat/${chat.M.chat_id.S}`}>
-            <Typography className='text-left' variant='subtitle2'>
-              {chat.M.title.S.length < 50 ? chat.M.title.S.substring(0, 20) + '...' : chat.M.title.S}
-            </Typography>
-          </Button>
-          <IconButton onClick={() => handleDelete(chat.M.chat_id.S)}>
-            <IconTrash className='text-white hover:text-red-500 transition-colors ease-in-out duration-300' strokeWidth={1.5} />
-          </IconButton>
+    <Box className="flex flex-col">
+      {userInfo[0] ? (
+        <>
+          {todayChats.length > 0 && renderChats(todayChats, 'Today')}
+          {lastWeekChats.length > 0 && renderChats(lastWeekChats, 'Last Week')}
+          {olderChats.length > 0 && renderChats(olderChats, 'Older')}
+          {todayChats.length === 0 && lastWeekChats.length === 0 && olderChats.length === 0 && (
+            <Box className='flex flex-row h-full mt-2' pl={1}>
+              <Typography className='text-left'>No chats available...</Typography>
+            </Box>
+          )}
+        </>
+      ) : (
+        <Box className='flex flex-row justify-center items-center h-full mt-2'>
+          <SpinnerComponent />
         </Box>
-      )) : <SpinnerComponent />}
+      )}
     </Box>
   )
 }
