@@ -532,3 +532,11 @@
 .banter-loader__box:nth-child(9) {
   animation: moveBox-9 4s infinite;
 }
+
+.fade-in {
+  opacity: 1 !important;
+}
+
+.fade-out {
+  opacity: 0 !important;
+}

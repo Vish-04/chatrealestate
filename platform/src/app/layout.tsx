@@ -5,6 +5,7 @@ import { Josefin_Sans } from "next/font/google";
 import { ThemeProvider } from '@mui/material/styles';
 import { theme } from "@/utils/theme";
 import { UserProvider } from '@auth0/nextjs-auth0/client';
+import AnimatedTransition from "./AnimatedTransition";
 
 const josefin = Josefin_Sans({ subsets: ["latin"] });
 
@@ -18,6 +19,8 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  
+
   return (
     <html lang="en">
       <head>
@@ -26,7 +29,7 @@ export default function RootLayout({
       <body className={`${josefin.className} overflow-hidden`}>
         <UserProvider>
           <ThemeProvider theme={theme}>
-            {children}
+            <AnimatedTransition children={children} />
           </ThemeProvider>
         </UserProvider>
       </body>
