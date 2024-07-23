@@ -2,3 +2,4 @@ scrapers/chat
 scrapers/chrome-win64
 scrapers/scrapervenv
 data_management/.env
+data_management/dyan
