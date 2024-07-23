@@ -22,6 +22,7 @@ import SpinnerComponent from '@/components/common/CustomSpinner'
 // ** Style Imports
 import { useTheme } from '@mui/material/styles'
 import { format, isToday, isThisWeek, parseISO } from 'date-fns'
+import Skeleton from '@mui/material/Skeleton'
 
 const ChatHistory = () => {
   const theme = useTheme()
@@ -67,7 +68,7 @@ const ChatHistory = () => {
       {chats.map((chat) => (
         <Box key={chat.M.chat_id.S} className='flex flex-row justify-between transition-all cursor-pointer ease-in-out duration-300 p-1' sx={{borderBottom: `1px solid ${theme.palette.divider}`}} onClick={() => {window.location.href = `/chat/${chat.M.chat_id.S}`}}>
           <Button fullWidth endIcon={
-            <IconTrash className='text-[#6f6f6f] hover:text-red-500 transition-colors ease-in-out duration-300' size={18} strokeWidth={1.5} />
+            <IconTrash className='text-[#6f6f6f] hover:text-red-500 transition-colors ease-in-out duration-300' size={18} strokeWidth={1.5} onClick={() => handleDelete(chat.M.chat_id.S)}/>
           } style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', textTransform: 'none' }}>
             {chat.M.title.S.length > 25 ? chat.M.title.S.substring(0, 25) + '...' : chat.M.title.S}
           </Button>
@@ -90,8 +91,56 @@ const ChatHistory = () => {
           )}
         </>
       ) : (
-        <Box className='flex flex-row justify-center items-center h-full mt-2'>
-          <SpinnerComponent />
+        <Box className='flex flex-col mt-2'>
+          <Box mt={1} pl={1} pr={1} pb={1} className='flex w-full gap-2 items-center justify-evenly' sx={{borderBottom: `1px solid ${theme.palette.divider}`}}> 
+               <Skeleton variant="rectangular" width={40} height={30} className='rounded-md' />
+               <Box className='flex flex-col'>
+                    <Skeleton variant="text" width={175} height={15} className='rounded-md' />     
+                    <Skeleton variant="text" width={100} height={15} className='rounded-md' />     
+               </Box>     
+            </Box>
+            <Box mt={1} pl={1} pr={1} pb={1} className='flex w-full gap-2 items-center justify-evenly' sx={{borderBottom: `1px solid ${theme.palette.divider}`}}> 
+               <Skeleton variant="rectangular" width={40} height={30} className='rounded-md' />
+               <Box className='flex flex-col'>
+                    <Skeleton variant="text" width={175} height={15} className='rounded-md' />     
+                    <Skeleton variant="text" width={100} height={15} className='rounded-md' />     
+               </Box>     
+            </Box>
+            <Box mt={1} pl={1} pr={1} pb={1} className='flex w-full gap-2 items-center justify-evenly' sx={{borderBottom: `1px solid ${theme.palette.divider}`}}> 
+               <Skeleton variant="rectangular" width={40} height={30} className='rounded-md' />
+               <Box className='flex flex-col'>
+                    <Skeleton variant="text" width={175} height={15} className='rounded-md' />     
+                    <Skeleton variant="text" width={100} height={15} className='rounded-md' />     
+               </Box>     
+            </Box>
+            <Box mt={1} pl={1} pr={1} pb={1} className='flex w-full gap-2 items-center justify-evenly' sx={{borderBottom: `1px solid ${theme.palette.divider}`}}> 
+               <Skeleton variant="rectangular" width={40} height={30} className='rounded-md' />
+               <Box className='flex flex-col'>
+                    <Skeleton variant="text" width={175} height={15} className='rounded-md' />     
+                    <Skeleton variant="text" width={100} height={15} className='rounded-md' />     
+               </Box>     
+            </Box>
+            <Box mt={1} pl={1} pr={1} pb={1} className='flex w-full gap-2 items-center justify-evenly' sx={{borderBottom: `1px solid ${theme.palette.divider}`}}> 
+               <Skeleton variant="rectangular" width={40} height={30} className='rounded-md' />
+               <Box className='flex flex-col'>
+                    <Skeleton variant="text" width={175} height={15} className='rounded-md' />     
+                    <Skeleton variant="text" width={100} height={15} className='rounded-md' />     
+               </Box>     
+            </Box>
+            <Box mt={1} pl={1} pr={1} pb={1} className='flex w-full gap-2 items-center justify-evenly' sx={{borderBottom: `1px solid ${theme.palette.divider}`}}> 
+               <Skeleton variant="rectangular" width={40} height={30} className='rounded-md' />
+               <Box className='flex flex-col'>
+                    <Skeleton variant="text" width={175} height={15} className='rounded-md' />     
+                    <Skeleton variant="text" width={100} height={15} className='rounded-md' />     
+               </Box>     
+            </Box>
+            <Box mt={1} pl={1} pr={1} pb={1} className='flex w-full gap-2 items-center justify-evenly' sx={{borderBottom: `1px solid ${theme.palette.divider}`}}> 
+               <Skeleton variant="rectangular" width={40} height={30} className='rounded-md' />
+               <Box className='flex flex-col'>
+                    <Skeleton variant="text" width={175} height={15} className='rounded-md' />     
+                    <Skeleton variant="text" width={100} height={15} className='rounded-md' />     
+               </Box>     
+            </Box>
         </Box>
       )}
     </Box>

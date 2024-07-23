@@ -18,7 +18,7 @@ const Chatbox = ({drawerOpen, setInputValue, inputValue, handleClick, email}: Ch
     return (
     <Box className={` h-[100vh] p-4 relative flex flex-col items-center text-center justify-between w-[calc(100vw-67px)]`}>
 
-      <Typography variant='h5' className={`text-[white] font-bold absolute top-0 left-0 mt-4 ml-4`}>
+      <Typography variant='h5' mt={2} ml={2} className={`text-[white] font-bold absolute top-0 left-0`}>
         Dream<span className="bg-gradient-to-r from-purple-400 via-pink-500  to-red-500 text-transparent bg-clip-text">RE</span>
       </Typography>
 

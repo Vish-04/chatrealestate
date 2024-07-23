@@ -1,5 +1,6 @@
 // ** Next Imports
 import * as React from 'react';
+import { useState } from 'react';
 
 // ** MUI Imports
 import Box from '@mui/material/Box';
@@ -29,13 +30,25 @@ interface PersistentDrawerProps {
 
 export default function PersistentDrawer({ open, handleDrawerClose, content }: PersistentDrawerProps) {
   const theme = useTheme();
+  const [isVisible, setIsVisible] = useState(open);
+
+  React.useEffect(() => {
+    if (open) {
+      setIsVisible(true);
+    }
+  }, [open]);
+
+  const handleClose = () => {
+    handleDrawerClose();
+    setTimeout(() => setIsVisible(false), 300);
+  };
 
   return (
     <Box sx={{ display: 'flex', position: 'relative' }}>
       <CssBaseline />
       <Dialog
         open={open}
-        onClose={handleDrawerClose}
+        onClose={handleClose}
         fullWidth
         maxWidth="sm"
         TransitionComponent={Grow}
@@ -49,6 +62,7 @@ export default function PersistentDrawer({ open, handleDrawerClose, content }: P
             width: 250,  
             border: `1px solid ${theme.palette.divider}`,
             backgroundColor: '#171717', // Slightly lighter than background.paper
+            display: isVisible ? 'block' : 'none', // Hide the component when not visible
           },
         }}
         BackdropProps={{

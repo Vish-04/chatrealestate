@@ -60,6 +60,8 @@ export type UserPreferencesType = {
   size_of_house: {L: number[]};
   beds_baths: {L: number[]};
   property_types: {L: string[]};
+  clicked?:{L: {S: string}[]}
+  viewed?:{L: {S: string}[]}
 };
 
 export type DrawerContentType = {
