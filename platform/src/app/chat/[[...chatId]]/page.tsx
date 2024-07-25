@@ -22,9 +22,7 @@ import ChatInterface from '@/components/chat-interface/ChatInterface';
 import { chatStarter } from '@/utils/vars';
 
 // ** UUID Imports
-import { v4 as uuidv4 } from 'uuid';
 import { createChat, fetchChatHistory, fetchUser, updateChatTable } from '@/utils/db';
-import SpinnerComponent from '@/components/common/CustomSpinner';
 
 const ChatPage = () => {
 
@@ -39,9 +37,6 @@ const ChatPage = () => {
   // ** Drawer States
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [drawerContent, setDrawerContent] = useState<DrawerContentType>({title: '', component: '', props: {}});
-
-  // ** Spinner States
-  const [spinnerOpen, setSpinnerOpen] = useState(false);
 
   // Chat Message States
   const [inputValue, setInputValue] = useState<string>(query.get('initialMessage') || '')
@@ -102,6 +97,8 @@ const ChatPage = () => {
         house_descriptions: userInfo[1]?.house_descriptions.L ,
         window_shopping: userInfo[1]?.window_shopping?.BOOL || undefined
       }
+
+      setInputValue('')
       
       // Update chat history first
       setChatHistory({
@@ -130,28 +127,12 @@ const ChatPage = () => {
       ...chatHistory,
       messages: {L: [...chatHistory.messages.L, 
           { M: {role: {S: "user"}, content: {S: inputValue}}},
-          { M: {role: {S: "assistant"}, content: {S: data.content}, componentProps: {
-              M: {componentType: {S: data.componentType}}
-          }}
-      } ]
+          { M: {role: {S: "assistant"}, content: {S: data.content}}}
+       ]
     }}, setChatHistory, email: user?.email as string});
-    
-    // Update userInfo with matching fields from data.updatedUserInfo
-    if (data.updatedUserInfo) {
-      setUserInfo(prevUserInfo => {
-        if (prevUserInfo.length === 0) {
-          return [data.updatedUserInfo, {} as UserPreferencesType];
-        }
-        return [prevUserInfo[0], {...prevUserInfo[1], ...data.updatedUserInfo}];
-      });
-    }
-    console.log("What would have been updated",  [userInfo[0], {...userInfo[1], ...data.updatedUserInfo}])
-    
-    // TODO: Function to update userInfo
+
     setLoading(false);
   }
-
-// Function to remove query parameters from the URL without reloading the page
 }
 
   return (
@@ -160,7 +141,7 @@ const ChatPage = () => {
       <SideBar 
         setDrawerContent={setDrawerContent} 
         setDrawerOpen={setDrawerOpen} 
-        userInfo={userInfo[0]}
+        userInfo={userInfo}
       />
 
       <PersistentDrawer 

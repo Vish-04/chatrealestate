@@ -23,6 +23,9 @@ import { getInitials } from '@/utils/utils';
 // ** Icon Imports
 import { IconAnalyze, IconEdit, IconFile, IconHistory, IconHome, IconLogout, IconSettings } from '@tabler/icons-react';
 
+// ** Component Imports
+import SettingsPopup from './profile-components/SettingsPopup';
+
 const ProfilePopup = () => {
     const { user, isLoading } = useUser()
     const [userInfo, setUserInfo] = useState<[UserType, UserPreferencesType] | []>([])
@@ -34,6 +37,29 @@ const ProfilePopup = () => {
         fetchUser({ email: user.email, setUserInfo })
       }
     }, [user?.email])
+
+    const hasIncompletePreferences = userInfo[1] && (
+      !userInfo[1].budget?.L.length ||
+      !userInfo[1].locations?.L.length ||
+      !userInfo[1].house_descriptions?.L.length ||
+      !userInfo[1].size_of_house?.L.length ||
+      !userInfo[1].beds_baths?.L.length ||
+      !userInfo[1].property_types?.L.length
+    );
+
+    const [settingsOpen, setSettingsOpen] = useState(false);
+    const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
+
+    const handleSettingsClick = (event: React.MouseEvent<HTMLElement>) => {
+        setAnchorEl(event.currentTarget);
+        setSettingsOpen(true);
+    };
+
+    const handleSettingsClose = () => {
+        setSettingsOpen(false);
+        setAnchorEl(null);
+    };
+
     return (
     <Box className=' flex w-full flex-col'>
       {userInfo[0]?.name?.S && userInfo[0]?.email?.S ? (
@@ -100,6 +126,7 @@ const ProfilePopup = () => {
             </Box>
             <Box mt={1} pl={1} pr={1} pb={1} className='flex w-full gap-2 items-center justify-evenly' sx={{borderBottom: `1px solid ${theme.palette.divider}`}}> 
                 <Button
+                    onClick={handleSettingsClick}
                     sx={{ 
                         textTransform: 'none',
                         justifyContent: 'flex-start',
@@ -121,6 +148,11 @@ const ProfilePopup = () => {
                                 size={20} 
                                 className="text-[#6f6f6f] p-0 hover:text-white duration-300 transition-all ease-in-out"/>
                         </IconButton>
+                    }
+                    endIcon={
+                        hasIncompletePreferences && (
+                            <Box className="ml-[134px] w-2 h-2 bg-purple-500 rounded-full"></Box>
+                        )
                     }
                 >
                     <Typography fontSize={12}>Settings</Typography>
@@ -182,7 +214,7 @@ const ProfilePopup = () => {
                     <Typography fontSize={12}>Reports</Typography>
                 </Button>
             </Box>
-            
+            <SettingsPopup anchorEl={anchorEl} open={settingsOpen} onClose={handleSettingsClose} />
         </>
           
       ) : (
