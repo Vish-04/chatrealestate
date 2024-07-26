@@ -47,11 +47,12 @@ exports.onExecutePostUserRegistration = async (event, api) => {
     email: event.user.email,
     budget: [],
     locations: [],
-    window_shopping: undefined,
-    house_descriptions: [],
+    house_descriptions: "",
     size_of_house:[],
     beds_baths: [],
-    property_types: []
+    property_types: [],
+    clicked:[],
+    viewed:[]
   }
 
   const paramsTwo = {

@@ -33,7 +33,6 @@ const SideBar = ({ setDrawerContent, setDrawerOpen, userInfo }: SideBarProps) =>
   const hasIncompletePreferences = userPreferences && (
     !userPreferences.budget?.L.length ||
     !userPreferences.locations?.L.length ||
-    !userPreferences.house_descriptions?.L.length ||
     !userPreferences.size_of_house?.L.length ||
     !userPreferences.beds_baths?.L.length ||
     !userPreferences.property_types?.L.length

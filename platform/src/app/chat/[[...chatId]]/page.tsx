@@ -90,12 +90,12 @@ const ChatPage = () => {
     } else if(user) {
       const userInformation = {
         name: userInfo[0]?.name?.S,
-        locations: userInfo[1]?.locations.L,
-        budget: userInfo[1]?.budget.L,
-        beds_baths: userInfo[1]?.beds_baths.L,
-        size_of_house: userInfo[1]?.size_of_house.L,
-        house_descriptions: userInfo[1]?.house_descriptions.L ,
-        window_shopping: userInfo[1]?.window_shopping?.BOOL || undefined
+        locations: userInfo[1]?.locations.L.map((l: { S: string }) => l.S),
+        budget: [userInfo[1]?.budget.L?.[0].N, userInfo[1]?.budget.L?.[1].N],
+        beds: userInfo[1]?.beds_baths.L?.[0].N,
+        baths: userInfo[1]?.beds_baths.L?.[1].N,
+        size_of_house: [userInfo[1]?.size_of_house.L?.[0].N, userInfo[1]?.size_of_house.L?.[1].N],
+        house_descriptions: userInfo[1]?.house_descriptions.S ,
       }
 
       setInputValue('')

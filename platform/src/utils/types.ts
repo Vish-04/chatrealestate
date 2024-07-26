@@ -46,15 +46,14 @@ export type UserType = {
 export type UserPreferencesType = {
   user_id: {S: string};
   email: {S: string};
-  budget: {L: number[]};
-  locations: {L: string[]};
-  window_shopping: {BOOL: boolean};
-  house_descriptions: {L: string[]};
-  size_of_house: {L: number[]};
-  beds_baths: {L: number[]};
-  property_types: {L: string[]};
-  clicked?:{L: {S: string}[]}
-  viewed?:{L: {S: string}[]}
+  budget: {L: {N: number}[]};
+  locations: {L: {S: string}[]};
+  house_descriptions: {S: string};
+  size_of_house: {L: {N: number}[]};
+  beds_baths: {L: {N: number}[]};
+  property_types: {L: {S: string}[]};
+  clicked:{L: {S: string}[]}
+  viewed:{L: {S: string}[]}
 };
 
 export type DrawerContentType = {

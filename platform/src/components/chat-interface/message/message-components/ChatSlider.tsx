@@ -4,7 +4,9 @@ import * as React from 'react';
 // ** MUI Imports
 import Box from '@mui/material/Box';
 import Slider from '@mui/material/Slider';
-import Typography from '@mui/material/Typography';
+
+// ** Style Imports
+import { useTheme } from '@mui/material/styles';
 
 const scale = (value: number) => {
   if (value <= 66) {
@@ -28,11 +30,11 @@ export default function ChatSlider({value, setValue}: {value: number[], setValue
     setValue((newValue as number[]).map(scale));
   };
 
+  const theme = useTheme();
+
   return (
-    <Box className=' w-1/2 flex items-center'>
-        <Typography className='w-[20px]'>
-          {value[0] >= 1000000 ? `${(value[0] / 1000000).toFixed(1)}M` : value[0] >= 1000 ? `${(value[0] / 1000).toFixed(1)}K` : value[0]}
-        </Typography>
+    <Box className=' w-[95%] flex'>
+        
       <Slider
         getAriaLabel={() => 'Budget range'}
         value={value.map(inverseScale)}
@@ -41,13 +43,16 @@ export default function ChatSlider({value, setValue}: {value: number[], setValue
         valueLabelDisplay="off"
         min={0}
         max={100}
-        step={1} // Adjust step to account for the scale
-        className='mx-10'
-        color='secondary'
+        className='ml-1'
+        
+        sx={{
+          '& .MuiSlider-thumb': {
+              width: 12,
+              height: 12,
+          },
+      }}
       />
-      <Typography className='w-[20px]'>
-        {value[1] >= 1000000 ? `${(value[1] / 1000000).toFixed(1)}M` : value[1] >= 1000 ? `${(value[1] / 1000).toFixed(1)}K` : value[1]}
-      </Typography>
+      
     </Box>
   );
 }

@@ -41,7 +41,6 @@ const ProfilePopup = () => {
     const hasIncompletePreferences = userInfo[1] && (
       !userInfo[1].budget?.L.length ||
       !userInfo[1].locations?.L.length ||
-      !userInfo[1].house_descriptions?.L.length ||
       !userInfo[1].size_of_house?.L.length ||
       !userInfo[1].beds_baths?.L.length ||
       !userInfo[1].property_types?.L.length
@@ -51,7 +50,7 @@ const ProfilePopup = () => {
     const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
 
     const handleSettingsClick = (event: React.MouseEvent<HTMLElement>) => {
-        setAnchorEl(event.currentTarget);
+        setAnchorEl(event.currentTarget.parentElement); 
         setSettingsOpen(true);
     };
 
@@ -214,7 +213,7 @@ const ProfilePopup = () => {
                     <Typography fontSize={12}>Reports</Typography>
                 </Button>
             </Box>
-            <SettingsPopup anchorEl={anchorEl} open={settingsOpen} onClose={handleSettingsClose} />
+            <SettingsPopup anchorEl={anchorEl} open={settingsOpen} onClose={handleSettingsClose} userInfo={userInfo} setUserInfo={setUserInfo} />
         </>
           
       ) : (
