@@ -64,11 +64,8 @@ export const POST = withApiAuthRequired(async function handler(req: NextRequest)
   };
 
   try {
-    console.log("IN")
     const command = new UpdateItemCommand(params);
-    console.log("BETWEEN") 
     await dynamoDBClient.send(command);
-    console.log("update works")
 
     // Fetch user using DynamoDB
     const user = await fetchUser(email);
@@ -83,7 +80,6 @@ export const POST = withApiAuthRequired(async function handler(req: NextRequest)
       UpdateExpression: '',
       ExpressionAttributeValues: {},
     };
-    console.log("through")
     if (clicked) {
       updateUserParams.UpdateExpression = 'SET viewed = list_append(if_not_exists(viewed, :empty_list), :viewed), clicked = list_append(if_not_exists(clicked, :empty_list), :clicked)';
       updateUserParams.ExpressionAttributeValues = {
@@ -101,7 +97,6 @@ export const POST = withApiAuthRequired(async function handler(req: NextRequest)
 
     // @ts-ignore
     await dynamoDBClient.send(new UpdateItemCommand(updateUserParams));
-    console.log("update user works")
 
     return NextResponse.json({ message: 'Listing and user preferences updated successfully' }, { status: 200 });
   } catch (error) {

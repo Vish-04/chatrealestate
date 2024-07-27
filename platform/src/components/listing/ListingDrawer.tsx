@@ -26,7 +26,6 @@ const ListingDrawer = ({ open, onClose, listing, email }: ListingDrawerProps) =>
 
   useEffect(() => {
     if(open && listing && email) {
-        console.log("OPENNN")
         updateEngagements(listing?.listings_detail_label?.S, listing?.zipcode?.S, true, true, email)
     }
   }, [open])
