@@ -5,7 +5,15 @@ import { useState } from 'react';
 
 // ** MUI Imports
 import Box from '@mui/material/Box';
-import { Button, Typography, Tooltip, TextField, Popover, Popper, ClickAwayListener } from '@mui/material'; 
+import Button from '@mui/material/Button'; 
+import Typography from '@mui/material/Typography'; 
+import Tooltip from '@mui/material/Tooltip'; 
+import TextField from '@mui/material/TextField'; 
+import Popover from '@mui/material/Popover'; 
+import Popper from '@mui/material/Popper'; 
+import ClickAwayListener from '@mui/material/ClickAwayListener'; 
+
+// ** Style Imports
 import { useTheme } from '@mui/material/styles';
 
 // ** Type Imports
@@ -20,11 +28,95 @@ import HorizontalScroller from '@/components/chatbox/HorizontalScroller';
 // ** Auth
 import { useUser } from '@auth0/nextjs-auth0/client';
 
+// ** Toast Imports
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css'; 
+import { Bounce } from "react-toastify";
+
 export default function Home() {
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const { user, isLoading } = useUser()
   const [inputValue, setInputValue] = useState<string>('');
+
+  const [email, setEmail] = useState<string>('');
+
+  const handleSubmit = async () => {
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!emailRegex.test(email)) {
+      toast('Please enter a valid email address.', {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+        transition: Bounce,
+      });
+      return;
+    }
+
+    toast('🦄 Adding you to the waitlist!', {
+      position: "top-right",
+      autoClose: 2000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "dark",
+      transition: Bounce,
+    });
+
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_GOOGLE_SHEET_API}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ data: [{ id: 'INCREMENT', email: email }] })
+      });
+
+      const data = await response.json();
+      console.log(data);
+      setEmail('');
+      toast('Added!', {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+        transition: Bounce,
+      });
+    } catch (error) {
+      console.error(error);
+      toast('Error adding to the waitlist.', {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+        transition: Bounce,
+      });
+    }
+  };
+
+  const handleKeyPress = (event: React.KeyboardEvent) => {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      handleSubmit();
+    }
+  };
 
   const handleClick = (event: any) => {
     event.preventDefault();
@@ -77,7 +169,7 @@ export default function Home() {
         {/* MAIN BODY */}
         <Box className="w-[calc(100vw-67px)] h-[100vh] p-4 relative flex flex-col items-center transition-all duration-500 text-center justify-between">
           {/* Sign In and Sign Up Buttons */}
-          <Box className="absolute top-0 right-0 mt-4 mr-4 flex gap-2">
+          {/* <Box className="absolute top-0 right-0 mt-4 mr-4 flex gap-2">
               <Button
                 href='/api/auth/login'
                 variant="outlined"
@@ -102,61 +194,70 @@ export default function Home() {
                 variant="outlined"
                 sx={{border: '2px solid', "&:hover": {border: '2px solid'}}}
               >
-                <span className="bg-gradient-to-r from-purple-400 via-pink-500 fade-in-on-scroll to-red-500 text-transparent font-semibold bg-clip-text">Sign Up</span>
+                <span className="bg-gradient-to-r from-purple-400 via-pink-500  to-red-500 text-transparent font-semibold bg-clip-text">Sign Up</span>
               </Button>
           </Box>
-  
+   */}
           <Typography variant='h5' className={`text-[white] font-bold absolute top-0 left-0 mt-4 ml-4`}>
-            Dream<span className="bg-gradient-to-r from-purple-400 via-pink-500 fade-in-on-scroll to-red-500 text-transparent bg-clip-text">RE</span> 
+            Dream<span className="bg-gradient-to-r from-purple-400 via-pink-500  to-red-500 text-transparent bg-clip-text">RE</span> 
           </Typography>
           
-          <Box className='w-full flex flex-col items-center justify-center fade-in-on-scroll mt-8'>
-              <Typography variant='h2' className={`text-[white] font-bold fade-in-on-scroll mb-2`}>
-              Finding Your <span className="bg-gradient-to-r from-purple-400 via-pink-500 fade-in-on-scroll to-red-500 text-transparent bg-clip-text">Dream </span> House
+          <Box className='w-full flex flex-col items-center justify-center'>
+              <Typography variant='h2' className={`text-[white] font-bold mb-2`}>
+              Finding Your <span className="bg-gradient-to-r from-purple-400 via-pink-500  to-red-500 text-transparent bg-clip-text">Dream </span> House
             </Typography>
-            <Typography className={`text-[white]/70 fade-in-on-scroll text-2xl mb-4`}>
+            <Typography className={`text-[white]/70  text-2xl`}>
               Chat with Properties and Rentals Across California
             </Typography>
           </Box>
   
+            {/* EMAIL INPUT */}
+          <Box className='w-[64%] h-min flex my-[-30px] flex-col'>
+            <Box id='email-input' className='w-full flex flex-row justify-between gap-2  cursor-pointer border rounded-md transition-all ease-in-out duration-300'>
+              <TextField
+                variant='outlined'
+                color='secondary'
+                fullWidth
+                autoComplete='false'
+                placeholder='Enter your email...'
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                onKeyPress={handleKeyPress}
+                InputProps={{
+                  endAdornment: (
+                    <IconSend
+                      size={30}
+                      stroke={2}
+                      className='text-[white] mr-2 hover:cursor-pointer hover:text-pink-500 transition-all ease-in-out duration-300'
+                      onClick={handleSubmit}
+                    />
+                  ),
+                  style: { border: 'none', boxShadow: 'none' }
+                }}
+                sx={{
+                  '& .MuiOutlinedInput-root': {
+                    '& fieldset': {
+                      border: 'none',
+                    },
+                    '&:hover fieldset': {
+                      border: 'none',
+                    },
+                    '&.Mui-focused fieldset': {
+                      border: 'none',
+                    },
+                  },
+                  '& .MuiInputBase-input': {
+                    color: 'white',
+                  },
+                }}
+              />
+            </Box>
+          </Box>
+          
           <HorizontalScroller setInputValue={setInputValue} email={undefined} />
   
           {/* CALL TO ACTION + TITLES */}
   
-          {/* FAKE INPUT */}
-          <Box className='w-[64%] px-4 py-3'>
-              <form onSubmit={handleClick}>
-              <Box id='finput' className='w-full flex flex-row items-center justify-between gap-2 fade-in-on-scroll cursor-pointer border mb-14 mt-10  rounded-md transition-all ease-in-out duration-300 ' >
-  
-              <TextField variant='outlined' color='secondary' fullWidth autoComplete='false' placeholder='Start Typing...'
-              value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
-              InputProps={{
-                endAdornment: <IconSend type='submit' size={30} stroke={2} className='text-[white] mr-2 hover:cursor-pointer hover:text-pink-500 transition-all ease-in-out duration-300' onClick={handleClick} />,
-                style: { border: 'none', boxShadow: 'none' }
-              }}
-              sx={{
-                '& .MuiOutlinedInput-root': {
-                  '& fieldset': {
-                    border: 'none',
-                  },
-                  '&:hover fieldset': {
-                    border: 'none',
-                  },
-                  '&.Mui-focused fieldset': {
-                    border: 'none',
-                  },
-                },
-                '& .MuiInputBase-input': {
-                  color: 'white',
-                },
-              }}
-              >
-                Get Started!!
-              </TextField>
-              </Box>
-            </form>
-            </Box>
             <ClickAwayListener onClickAway={(e) => {
               if (  anchorEl && !anchorEl.contains(e.target as Node)) {
                 handleClose();
@@ -168,37 +269,14 @@ export default function Home() {
                 anchorEl={anchorEl}
                 placement='top'
               >
-                <Box p={2} className={`flex flex-col justify-center items-center border border-[${theme.palette.text.secondary}] bg-[#121212] rounded-md z-[100]`}>
-                  <Typography variant="h6" className="text-center" color="text.secondary">
-                    Log In to use this feature
+                <Box pl={1} p={1} className={`flex flex-col justify-center min-w-[200px] border border-[${theme.palette.divider}] bg-[#1b1b1b] rounded-md z-[100]`}>
+                  <Typography fontSize={14} className="text-left" color="text.secondary">
+                    Coming Soon...
                   </Typography>
-                  <Box className='flex flex-col items-center justify-center mt-1 w-full'>
-                      <Button
-                        variant="outlined"
-                        color="info"
-                        className='group'
-                        fullWidth 
-                        href='/api/auth/login'
-                      >
-                        <Typography variant="subtitle2" color="text.primary">
-                          Log In
-                        </Typography>
-                      </Button>
-                    <Box className='w-[80%] gap-2 flex items-center justify-center mt-1 mb-1'>
-                      <Box width="60%" borderBottom={`1px solid ${theme.palette.info.main}`} />
-                      <Typography variant="subtitle2" className="text-center" color="text.secondary">
-                        Or
-                      </Typography>
-                      <Box width="60%" borderBottom={`1px solid ${theme.palette.info.main}`} />
-                    </Box>
-                      <Button variant="contained" color="info" className="mb-2" fullWidth
-                      href='/api/auth/login'
-                      >
-                        <Typography variant="subtitle2" color="black">
-                          Sign Up
-                        </Typography>
-                      </Button>
-                  </Box>
+                  <Typography fontSize={14} className="text-left" color="white" noWrap>
+                    Join the Waitlist for early access!
+                  </Typography>
+                  
                 </Box>
               </Popper>
             </ClickAwayListener>

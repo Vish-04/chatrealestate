@@ -6,6 +6,7 @@ import { ThemeProvider } from '@mui/material/styles';
 import { theme } from "@/utils/theme";
 import { UserProvider } from '@auth0/nextjs-auth0/client';
 import AnimatedTransition from "./AnimatedTransition";
+import { ToastContainer } from 'react-toastify';
 
 const josefin = Josefin_Sans({ subsets: ["latin"] });
 
@@ -30,6 +31,7 @@ export default function RootLayout({
         <UserProvider>
           <ThemeProvider theme={theme}>
             <AnimatedTransition children={children} />
+            <ToastContainer />
           </ThemeProvider>
         </UserProvider>
       </body>
