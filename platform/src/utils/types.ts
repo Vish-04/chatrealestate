@@ -54,6 +54,7 @@ export type UserPreferencesType = {
   property_types: {L: {S: string}[]};
   clicked:{L: {S: string}[]}
   viewed:{L: {S: string}[]}
+  saved:{L: {S: string}[]}
 };
 
 export type DrawerContentType = {
