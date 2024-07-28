@@ -55,6 +55,7 @@ const SettingsPopup: React.FC<SettingsPopupProps> = ({ anchorEl, open, onClose, 
             property_types: { L: propertyType.map(p => ({ S: p })) },
             clicked: userInfo[1]?.clicked || { L: [] },
             viewed: userInfo[1]?.viewed || { L: [] },
+            saved: userInfo[1]?.saved || { L: [] },
             };
             
         try {
