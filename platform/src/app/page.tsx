@@ -199,7 +199,7 @@ export default function Home() {
           </Box>
    */}
           <Typography variant='h5' className={`text-[white] font-bold absolute top-0 left-0 mt-4 ml-4`}>
-            Dream<span className="bg-gradient-to-r from-purple-400 via-pink-500  to-red-500 text-transparent bg-clip-text">RE</span> 
+            House<span className="bg-gradient-to-r from-purple-400 via-pink-500  to-red-500 text-transparent bg-clip-text">Snap</span> 
           </Typography>
           
           <Box className='w-full flex flex-col items-center justify-center'>

@@ -52,7 +52,8 @@ exports.onExecutePostUserRegistration = async (event, api) => {
     beds_baths: [],
     property_types: [],
     clicked:[],
-    viewed:[]
+    viewed:[],
+    saved:[]
   }
 
   const paramsTwo = {

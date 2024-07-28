@@ -33,6 +33,7 @@ exports.onExecutePostLogin = async (event, api) => {
 
   try {
     const result = await dynamoDB.scan(searchParams).promise();
+    console.log(result.Items[0])
     if (result.Items.length <= 0) {    
 
   const userId = uuidv4();
@@ -60,7 +61,8 @@ exports.onExecutePostLogin = async (event, api) => {
     beds_baths: [],
     property_types: [],
     clicked:[],
-    viewed:[]
+    viewed:[],
+    saved: []
   }
 
   const paramsTwo = {
@@ -76,6 +78,25 @@ exports.onExecutePostLogin = async (event, api) => {
   }
   } else {
       console.log('Email found in the database:', event.user.email);
+      const updateParams = {
+        TableName: event.secrets.TABLE_NAME,
+        Key: {
+          'user_id': result.Items[0].user_id,
+          'email': event.user.email
+        },
+        UpdateExpression: 'set geoip = :geoip, ip = :ip',
+        ExpressionAttributeValues: {
+          ':geoip': event?.request?.geoip || undefined,
+          ':ip': event?.request?.ip || undefined
+        }
+      };
+
+      try {
+        await dynamoDB.update(updateParams).promise();
+        console.log('User IP and geoip updated successfully');
+      } catch (error) {
+        console.error('Error updating user in DynamoDB:', error);
+      }
     }
   } catch (error) {
     console.error('Error querying DynamoDB:', error);
